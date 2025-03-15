@@ -1,0 +1,49 @@
+{
+  "name": "hirasso/acf-events",
+  "description": "Mange events, recurrences and locations using Advanced Custom Fields 📆",
+  "license": "GPL-2.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Hirasso\\ACFEvents\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    },
+    "exclude-from-classmap": [
+      "tests/E2E/helper-plugin.php"
+    ]
+  },
+  "type": "wordpress-plugin",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.2",
+    "composer/installers": "^1.0 || ^2.0",
+    "illuminate/collections": "^11.29",
+    "illuminate/support": "^11.44",
+    "php-di/php-di": "^7.0"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.19",
+    "pestphp/pest": "^1.23",
+    "php-stubs/acf-pro-stubs": "^6.3",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.1",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "wpsyntex/polylang-stubs": "^3.6",
+    "yoast/wp-test-utils": "^1.2"
+  },
+  "scripts-descriptions": {},
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "pestphp/pest-plugin": true,
+      "phpstan/extension-installer": true
+    },
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

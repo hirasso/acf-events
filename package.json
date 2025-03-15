@@ -1,0 +1,38 @@
+{
+  "name": "acf-events",
+  "type": "module",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "prepare": "husky",
+    "preinstall": "npx only-allow pnpm",
+    "format:assets": "npx prettier --write '**/*.{ts,js,css,scss}'",
+    "format:php": "./vendor/bin/pint src config",
+    "version": "pnpm changeset version && config/cli/cli.js version:patch",
+    "pot:make": "SLUG=$(basename \"$(pwd)\"); wp i18n make-pot . languages/$SLUG.pot --include=src,$SLUG.php",
+    "wp": "wp-env",
+    "wp:cli": "pnpm wp run cli --env-cwd=wp-content/plugins/acf-events",
+    "wp:cli:tests": "pnpm wp run tests-cli --env-cwd=wp-content/plugins/acf-events",
+    "wp:open": "open http://localhost:9783",
+    "wp:open:tests": "open http://localhost:9784",
+    "test": "pnpm test:pest && pnpm wp clean && pnpm wp start && pnpm test:e2e",
+    "test:pest": "pnpm wp:cli:tests vendor/bin/pest --no-coverage",
+    "test:pest:ci": "pnpm wp:cli:tests vendor/bin/pest --coverage-clover coverage.xml",
+    "test:e2e": "pnpm exec playwright test --config ./tests/E2E/playwright.config.ts",
+    "test:e2e:dev": "PLAYWRIGHT_ENV=dev pnpm test:e2e --ui",
+    "test:e2e:install": "pnpm exec playwright install --with-deps",
+    "act:php-tests": "act -j php-tests --matrix php:8.2 --container-options '--privileged'",
+    "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.5",
+    "@wordpress/env": "^10.11.0",
+    "fast-glob": "^3.3.2",
+    "husky": "^9.1.1",
+    "lint-staged": "^15.2.7",
+    "picocolors": "^1.1.1",
+    "prettier": "^3.3.3"
+  }
+}

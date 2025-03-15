@@ -1,0 +1,13 @@
+parameters:
+  level: 5
+
+  bootstrapFiles:
+    - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
+    - vendor/wpsyntex/polylang-stubs/polylang-stubs.php
+
+  paths:
+    - acf-events.php
+    - src
+
+  ignoreErrors:
+    # - '#Action callback returns .+ but should not return anything#'

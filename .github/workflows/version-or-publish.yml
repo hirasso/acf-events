@@ -1,0 +1,104 @@
+name: Version or Publish
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  package-infos:
+    name: Get Package Infos
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      fullName: ${{ steps.package-infos.outputs.fullName }}
+      vendorName: ${{ steps.package-infos.outputs.vendorName }}
+      packageName: ${{ steps.package-infos.outputs.packageName }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read and Write Package Infos to Output
+        id: package-infos
+        run: |
+          NAME=$(jq -r '.name' composer.json)
+          echo "fullName=${NAME}" >> $GITHUB_OUTPUT
+          echo "vendorName=${NAME%%/*}" >> $GITHUB_OUTPUT
+          echo "packageName=${NAME#*/}" >> $GITHUB_OUTPUT
+          cat "$GITHUB_OUTPUT"
+
+  release:
+    needs: package-infos
+    if: ${{ github.repository == needs.package-infos.outputs.fullName }}
+
+    name: Create Version PR or Publish
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.email "bot@rassohilber.com"
+          git config --global user.name "Rasso Hilber's Bot"
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Shared Setup
+        uses: ./.github/actions/shared-setup
+
+      - name: Checkout Distribution Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ needs.package-infos.outputs.fullName }}-dist
+          ref: empty
+          path: dist
+          # secrets.GITHUB_TOKEN is not enough to push to the dist repo (needed later)
+          token: ${{ secrets.HIRASSO_ACTIONS_TOKEN }}
+
+      # Run this before changesets, to make sure releases actually work
+      - name: Create Release Files and Prepare Dist Folder
+        run: |
+          config/cli/cli.js release:create
+          config/cli/cli.js dist:prepare
+
+      # Run changesets action either if there are unreleased changesets (= a PR must be created)
+      # or if the commit message matches the release PR (= new versions must be published to NPM)
+      - name: Create changesets PR or Publish
+        id: cs
+        uses: changesets/action@v1
+        with:
+          title: "[CI] Release"
+          commit: "[CI] Release"
+          version: pnpm run version
+          publish: pnpm changeset tag
+        env:
+          # Do not run husky/lintstaged
+          HUSKY: 0
+          # Doesn't work with GITHUB_TOKEN for some reason
+          GITHUB_TOKEN: ${{ secrets.HIRASSO_ACTIONS_TOKEN }}
+
+      - name: Upload release asset
+        if: steps.cs.outputs.published == 'true'
+        run: |
+          TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName')
+          ASSET="${{ needs.package-infos.outputs.packageName }}.zip"
+          echo "Latest tag: $TAG"
+          gh release upload "$TAG" "$ASSET" --clobber
+          echo "✅ Uploaded $ASSET to the release $TAG"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Push release to dist repo
+        if: steps.cs.outputs.published == 'true'
+        run: |
+          config/cli/cli.js dist:push
