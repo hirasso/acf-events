@@ -116,14 +116,16 @@ final class PolylangIntegration
     /**
      * Get all active languages
      */
-    protected function getActiveLanguages() {
+    protected function getActiveLanguages()
+    {
         return collect(pll_the_languages(['raw' => true]))->pluck('slug')->all();
     }
 
     /**
      * Get missing post translations
      */
-    protected function getMissingPostTranslations(int $postID): array {
+    protected function getMissingPostTranslations(int $postID): array
+    {
         return collect($this->getActiveLanguages())
             ->diff(array_keys(pll_get_post_translations($postID)))
             ->all();
@@ -252,17 +254,19 @@ final class PolylangIntegration
     public function injectLocationFields(array $fields): array
     {
         $titleFields = collect($this->getActiveLanguages())
-            ->map(function($lang) {
+            ->map(function ($lang) {
 
                 $fieldName = "_post_title_$lang";
                 add_filter("acf/prepare_field/name=$fieldName", [$this, "prepareInjectedLocationField"]);
 
+                $language = PLL()->model->get_language($lang);
+
                 return [
                     'key' => Fields::key($fieldName),
                     'name' => $fieldName,
-                    'label' => "Title ($lang)",
+                    'label' => "Title ($language->name)",
                     'acfe_field_language' => $lang,
-                    'instructions' => "Will be used for generating a translation",
+                    'instructions' => "Will be used to automatically generate a translation",
                     'required' => 1,
                     'type' => 'text',
                     'parent' => LocationFields::GROUP_KEY
@@ -276,7 +280,8 @@ final class PolylangIntegration
     /**
      * Hides unrequired location fields based on language
      */
-    public function prepareInjectedLocationField(?array $field): ?array {
+    public function prepareInjectedLocationField(?array $field): ?array
+    {
         if (empty($field)) {
             return null;
         }
