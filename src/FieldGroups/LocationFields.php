@@ -24,86 +24,87 @@ final class LocationFields extends Fields
     public const WEBSITE = 'acfe_location_website';
     public const MAPS_URL = 'acfe_location_maps_url';
     protected const DEBUG_ATTACHED_EVENTS = 'acfe_location_debug_info';
-
-    private const GROUP_KEY = 'group_acfe_location_settings';
-    private const GROUP_TITLE = 'Location Settings';
+    public const GROUP_KEY = 'group_acfe_location_settings';
+    public const GROUP_TITLE = 'Location Settings';
 
     protected function addFields()
     {
-        add_filter('acf/prepare_field/key=' . self::key(self::DEBUG_ATTACHED_EVENTS), [self::class, 'prepare_field_debug_attached_events']);
+        add_filter('acf/prepare_field/key='.self::key(self::DEBUG_ATTACHED_EVENTS), [self::class, 'prepare_field_debug_attached_events']);
 
-        $appendToTitle = current_user_can('administrator') ? ' (Registered in PHP)' : '';
+        $fields = [
+            [
+                'key' => self::key(self::SORT_NAME),
+                'label' => 'Sort Name',
+                'name' => self::SORT_NAME,
+                'type' => 'text',
+                'instructions' => 'Optional',
+                'translations' => 'copy_once',
+            ],
+            [
+                'key' => self::key(self::ADDRESS),
+                'label' => 'Address',
+                'name' => self::ADDRESS,
+                'type' => 'textarea',
+                'required' => 1,
+                'translations' => 'sync',
+                'rows' => 2,
+                'new_lines' => 'br',
+            ],
+            [
+                'key' => self::key(self::AREA),
+                'label' => 'Area',
+                'name' => self::AREA,
+                'type' => 'text',
+                'translations' => 'copy_once',
+            ],
+            [
+                'key' => self::key(self::TEL),
+                'label' => 'Tel',
+                'name' => self::TEL,
+                'type' => 'text',
+                'translations' => 'sync',
+                'wrapper' => ['width' => 50],
+            ],
+            [
+                'key' => self::key(self::EMAIL),
+                'label' => 'Email',
+                'name' => self::EMAIL,
+                'type' => 'email',
+                'translations' => 'sync',
+                'wrapper' => ['width' => 50],
+            ],
+            [
+                'key' => self::key(self::WEBSITE),
+                'label' => 'Website',
+                'name' => self::WEBSITE,
+                'aria-label' => '',
+                'type' => 'url',
+                'translations' => 'copy_once',
+                'wrapper' => ['width' => 50],
+            ],
+            [
+                'key' => self::key(self::MAPS_URL),
+                'label' => 'Maps URL',
+                'name' => self::MAPS_URL,
+                'type' => 'url',
+                'relevanssi_exclude' => 1,
+                'translations' => 'sync',
+                'wrapper' => ['width' => 50],
+            ],
+            [
+                'key' => self::key(self::DEBUG_ATTACHED_EVENTS),
+                'label' => 'Attached Events',
+                'name' => self::DEBUG_ATTACHED_EVENTS,
+                'type' => 'message',
+            ],
+        ];
 
-        $group = [
+        $fields = apply_filters('acfe:location:fields', $fields);
+
+        acf_add_local_field_group([
             'key' => self::GROUP_KEY,
             'title' => self::GROUP_TITLE,
-            'fields' => [
-                [
-                    'key' => self::key(self::SORT_NAME),
-                    'label' => 'Sort Name',
-                    'name' => self::SORT_NAME,
-                    'type' => 'text',
-                    'instructions' => 'Optional',
-                    'translations' => 'copy_once',
-                ],
-                [
-                    'key' => self::key(self::ADDRESS),
-                    'label' => 'Address',
-                    'name' => self::ADDRESS,
-                    'type' => 'textarea',
-                    'required' => 1,
-                    'translations' => 'sync',
-                    'rows' => 2,
-                    'new_lines' => 'br',
-                ],
-                [
-                    'key' => self::key(self::AREA),
-                    'label' => 'Area',
-                    'name' => self::AREA,
-                    'type' => 'text',
-                    'translations' => 'copy_once',
-                ],
-                [
-                    'key' => self::key(self::TEL),
-                    'label' => 'Tel',
-                    'name' => self::TEL,
-                    'type' => 'text',
-                    'translations' => 'sync',
-                    'wrapper' => ['width' => 50]
-                ],
-                [
-                    'key' => self::key(self::EMAIL),
-                    'label' => 'Email',
-                    'name' => self::EMAIL,
-                    'type' => 'email',
-                    'translations' => 'sync',
-                    'wrapper' => ['width' => 50]
-                ],
-                [
-                    'key' => self::key(self::WEBSITE),
-                    'label' => 'Website',
-                    'name' => self::WEBSITE,
-                    'aria-label' => '',
-                    'type' => 'url',
-                    'translations' => 'copy_once',
-                    'wrapper' => ['width' => 50]
-                ],
-                [
-                    'key' => self::key(self::MAPS_URL),
-                    'label' => 'Maps URL',
-                    'name' => self::MAPS_URL,
-                    'type' => 'url',
-                    'relevanssi_exclude' => 1,
-                    'translations' => 'sync',
-                    'wrapper' => ['width' => 50]
-                ],
-                [
-                    'key' => self::key(self::DEBUG_ATTACHED_EVENTS),
-                    'label' => 'Attached Events',
-                    'name' => self::DEBUG_ATTACHED_EVENTS,
-                    'type' => 'message',
-                ],
-            ],
+            'fields' => $fields,
             'location' => [
                 [
                     [
@@ -120,9 +121,7 @@ final class LocationFields extends Fields
             'instruction_placement' => 'label',
             'active' => true,
             'show_in_rest' => 1,
-        ];
-
-        acf_add_local_field_group($group);
+        ]);
 
     }
 
@@ -143,13 +142,13 @@ final class LocationFields extends Fields
 
         ob_start() ?>
         <table class="wp-list-table widefat striped">
-            <?php foreach ($attachedEvents as $p) : ?>
+            <?php foreach ($attachedEvents as $p) { ?>
                 <tr>
                     <td><?= get_the_title($p) ?></td>
                     <td><a target="_blank" href="<?= get_permalink($p) ?>">view</a></td>
                     <td><a href="<?= get_edit_post_link($p->ID) ?>">edit</a></td>
                 </tr>
-            <?php endforeach; ?>
+            <?php } ?>
         </table>
 
         <?php

@@ -20,7 +20,6 @@
  */
 
 use Hirasso\ACFEvents\ACFEvents;
-use Hirasso\ACFEvents\Core;
 
 /** Exit if accessed directly */
 if (!defined('ABSPATH')) {
@@ -42,7 +41,7 @@ if (is_readable(__DIR__ . '/vendor/scoper-autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-/** @return Core */
+/** @return \Hirasso\ACFEvents\Core */
 function acfEvents()
 {
     static $instance;
@@ -53,4 +52,7 @@ function acfEvents()
     return $instance->core();
 }
 
-acfEvents()->register();
+add_action('plugins_loaded', function() {
+    acfEvents();
+});
+
