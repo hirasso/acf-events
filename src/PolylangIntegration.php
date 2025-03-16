@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Hirasso\ACFEvents;
 
+use Hirasso\ACFEvents\FieldGroups\Fields;
+use Hirasso\ACFEvents\FieldGroups\LocationFields;
 use RuntimeException;
 use WP_Term;
 use WP_Post;
@@ -52,6 +54,8 @@ final class PolylangIntegration
         add_action('pll_save_post', [$this, 'pll_save_post'], 10, 3);
         add_filter('term_link', [$this, 'event_filter_term_link'], 11, 2);
         add_filter('gettext', [$this, 'translate_gettext'], 10, 3);
+
+        add_filter('acfe:location:fields', [$this, 'injectLocationFields']);
     }
 
     /**
@@ -98,16 +102,31 @@ final class PolylangIntegration
             return;
         }
 
-        $missingTranslations = collect(pll_the_languages(['raw' => true]))
-                ->pluck('slug')
-                ->diff(array_keys($translations))
-                ->all();
+        $missingTranslations = collect($this->getActiveLanguages())
+            ->diff(array_keys($translations))
+            ->all();
 
         foreach ($missingTranslations as $lang) {
             $translations[$lang] = $this->createPostTranslation($postID, $lang);
         }
 
         pll_save_post_translations($translations);
+    }
+
+    /**
+     * Get all active languages
+     */
+    protected function getActiveLanguages() {
+        return collect(pll_the_languages(['raw' => true]))->pluck('slug')->all();
+    }
+
+    /**
+     * Get missing post translations
+     */
+    protected function getMissingPostTranslations(int $postID): array {
+        return collect($this->getActiveLanguages())
+            ->diff(array_keys(pll_get_post_translations($postID)))
+            ->all();
     }
 
     /**
@@ -122,6 +141,9 @@ final class PolylangIntegration
             return $existingTranslation;
         }
 
+        /** @var string|false $translatedTitle */
+        $translatedTitle = get_field(Fields::key("_post_title_$lang"), $postID);
+
         /** @var \PLL_Language $language */
         $language = PLL()->model->get_language($lang);
 
@@ -129,17 +151,19 @@ final class PolylangIntegration
         $originalPostArray = get_post($postID, ARRAY_A);
 
         $taxInput = collect(get_post_taxonomies($postID))
-            ->except(['language', 'post_translations'])
+            ->diff(['post_translations'])
             ->mapWithKeys(fn ($tax) => [
                 $tax => collect(wp_get_object_terms($postID, $tax))
                     ->map(fn ($term) => $term->term_id)
                     ->all(),
             ])
+            ->replace(['language' => [$language->term_id]])
             ->all();
 
         $postarr = collect($originalPostArray)
-            ->except(['ID'])
-            ->merge([
+            ->except(['ID', 'post_name'])
+            ->replaceRecursive([
+                'post_title' => $translatedTitle ?: get_the_title($postID),
                 'meta_input' => $originalMeta,
                 'tax_input' => $taxInput,
             ])
@@ -157,10 +181,10 @@ final class PolylangIntegration
          * Re-save the post_name after the post language was set,
          * so that Polylang can share the same slug between languages
          */
-        wp_update_post([
-            'ID' => $translationID,
-            'post_name' => $originalPostArray['post_name']
-        ]);
+        // wp_update_post([
+        //     'ID' => $translationID,
+        //     'post_name' => $originalPostArray['post_name']
+        // ]);
 
         return $translationID;
     }
@@ -220,5 +244,55 @@ final class PolylangIntegration
             return pll__($original);
         }
         return $translated;
+    }
+
+    /**
+     * Inject location fields
+     */
+    public function injectLocationFields(array $fields): array
+    {
+        $titleFields = collect($this->getActiveLanguages())
+            ->map(function($lang) {
+
+                $fieldName = "_post_title_$lang";
+                add_filter("acf/prepare_field/name=$fieldName", [$this, "prepareInjectedLocationField"]);
+
+                return [
+                    'key' => Fields::key($fieldName),
+                    'name' => $fieldName,
+                    'label' => "Title ($lang)",
+                    'acfe_field_language' => $lang,
+                    'instructions' => "Will be used for generating a translation",
+                    'required' => 1,
+                    'type' => 'text',
+                    'parent' => LocationFields::GROUP_KEY
+                ];
+            });
+
+        $fields = collect($fields)->unshift(...$titleFields)->all();
+        return $fields;
+    }
+
+    /**
+     * Hides unrequired location fields based on language
+     */
+    public function prepareInjectedLocationField(?array $field): ?array {
+        if (empty($field)) {
+            return null;
+        }
+
+        $postID = intval($_GET['post'] ?? 0);
+
+        if (!$postID || get_current_screen()?->id !== PostTypes::LOCATION) {
+            return $field;
+        }
+
+        $translations = array_keys(pll_get_post_translations($postID));
+
+        if (in_array($field['acfe_field_language'], $translations)) {
+            return null;
+        }
+
+        return $field;
     }
 }
