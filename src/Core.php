@@ -202,18 +202,26 @@ final class Core
      * Get all events attached to a location
      * @return int[]|WP_Post[]
      */
-    public function getEventsAtLocation(int|WP_Post $post, int $amount = -1, bool $ids = true): array
-    {
+    public function getEventsAtLocation(
+        int|WP_Post $post,
+        int $amount = -1,
+        bool $ids = true,
+        bool $includeRecurrences = true
+    ): array {
         $postID = $post->ID ?? $post;
 
         if (!$this->isLocation($postID)) {
             return [];
         }
 
+        $postType = $includeRecurrences
+            ? [PostTypes::EVENT, PostTypes::RECURRENCE]
+            : PostTypes::EVENT;
+
         $args = [
             // 'lang' => pll_get_post_language($postID),
             'suppress_filters' => true,
-            'post_type' => [PostTypes::EVENT, PostTypes::RECURRENCE],
+            'post_type' => $postType,
             'posts_per_page' => $amount,
             'meta_query' => [
                 EventFields::LOCATION_ID => [

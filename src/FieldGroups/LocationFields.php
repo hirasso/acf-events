@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hirasso\ACFEvents\FieldGroups;
 
 use Hirasso\ACFEvents\PostTypes;
+use WP_Post;
 
 /**
  * Global field names
@@ -134,7 +135,13 @@ final class LocationFields extends Fields
             return null;
         }
 
-        $attachedEvents = acfEvents()->getEventsAtLocation(get_post(), amount: -1, ids: false);
+        /** @var WP_Post[] $attachedEvents */
+        $attachedEvents = acfEvents()->getEventsAtLocation(
+            get_post(),
+            amount: -1,
+            ids: false,
+            includeRecurrences: false
+        );
 
         if (empty($attachedEvents)) {
             return $field;
