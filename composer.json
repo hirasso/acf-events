@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": ">=8.2",
-    "illuminate/collections": "^12.53"
+    "illuminate/collections": "^11 || ^12"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
