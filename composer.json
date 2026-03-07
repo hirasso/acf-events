@@ -26,8 +26,9 @@
     ]
   },
   "scripts": {
-    "format": "vendor/bin/pint",
-    "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
+    "format": "vendor/bin/mago format",
+    "lint": "vendor/bin/mago lint",
+    "analyse": "vendor/bin/mago analyse"
   },
   "config": {
     "optimize-autoloader": true,
@@ -35,7 +36,6 @@
     "sort-packages": true,
     "allow-plugins": {
       "composer/installers": true,
-      "phpstan/extension-installer": true,
       "roots/wordpress-core-installer": true
     }
   },
@@ -64,9 +64,7 @@
     }
   },
   "require-dev": {
-    "laravel/pint": "^1.27",
-    "phpstan/extension-installer": "^1.4",
-    "phpstan/phpstan": "^2.1",
+    "carthage-software/mago": "^1.13",
     "roots/wordpress": "^6.9",
     "wpackagist-plugin/advanced-custom-fields": "^6.7",
     "wpackagist-plugin/classic-editor": "^1.6",
