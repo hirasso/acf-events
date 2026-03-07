@@ -32,7 +32,7 @@ final readonly class ACFEvents
         (new LocationFields($core))->register();
         (new Locations($core))->register();
         (new Recurrences($core))->register();
-        (new PolylangIntegration($core))->register();
+        (new PolylangIntegration())->register();
 
         $this->core = $core;
     }
