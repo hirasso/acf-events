@@ -1,0 +1,75 @@
+{
+  "name": "hirasso/acf-events",
+  "description": "A Composer library to manage events, recurrences and locations using WordPress+Advanced Custom Fields 📆",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Rasso Hilber",
+      "email": "mail@rassohilber.com",
+      "homepage": "https://rassohilber.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "illuminate/collections": "^12.53"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Hirasso\\ACFEvents\\": [
+        "src/ACFEvents"
+      ]
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "scripts": {
+    "format": "vendor/bin/pint",
+    "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true,
+      "phpstan/extension-installer": true,
+      "roots/wordpress-core-installer": true
+    }
+  },
+  "extra": {
+    "installer-paths": {
+      "vendor/.wp/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin"
+      ],
+      "vendor/.wp/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "vendor/.wp/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    },
+    "wordpress-install-dir": "vendor/.wp/core"
+  },
+  "repositories": {
+    "wpackagist": {
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": [
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
+      ]
+    }
+  },
+  "require-dev": {
+    "laravel/pint": "^1.27",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.1",
+    "roots/wordpress": "^6.9",
+    "wpackagist-plugin/advanced-custom-fields": "^6.7",
+    "wpackagist-plugin/classic-editor": "^1.6",
+    "wpackagist-plugin/polylang": "^3.7"
+  }
+}

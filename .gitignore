@@ -1,0 +1,25 @@
+# system
+.DS_Store
+
+# npm
+npm-debug.log
+package.lock
+node_modules
+yarn.lock
+
+# source maps
+*.map
+
+# phpunit
+.phpunit.result.cache
+*.xml.dist.bak
+
+# composer
+vendor
+
+# other
+*.sql
+*.log
+*.zip
+*.afphoto~lock~
+acf-events
