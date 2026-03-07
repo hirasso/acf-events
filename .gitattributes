@@ -1,0 +1,12 @@
+# dotfiles
+.* export-ignore
+
+# Tooling
+pint.json export-ignore
+phpstan.neon export-ignore
+
+# composer
+composer.lock export-ignore
+
+# markdown
+*.md export-ignore
