@@ -17,7 +17,10 @@ use Hirasso\ACFEvents\Internal\Core;
  */
 abstract class Fields
 {
-    public function __construct(protected Core $core) {}
+    public function __construct(
+        protected Core $core,
+    ) {}
+
     /**
      * Register hooks
      */
@@ -31,7 +34,7 @@ abstract class Fields
      */
     public function acf_include_fields()
     {
-        if (! \function_exists('acf_add_local_field_group')) {
+        if (!\function_exists('acf_add_local_field_group')) {
             throw new Exception("'acf_add_local_field_group()' is not defined");
         }
 

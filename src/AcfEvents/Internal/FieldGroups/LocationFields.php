@@ -30,7 +30,10 @@ final class LocationFields extends Fields
 
     protected function addFields()
     {
-        \add_filter('acf/prepare_field/key=' . self::key(self::DEBUG_ATTACHED_EVENTS), $this->prepare_field_debug_attached_events(...));
+        \add_filter(
+            'acf/prepare_field/key=' . self::key(self::DEBUG_ATTACHED_EVENTS),
+            $this->prepare_field_debug_attached_events(...),
+        );
 
         $fields = [
             [
@@ -123,7 +126,6 @@ final class LocationFields extends Fields
             'active' => true,
             'show_in_rest' => 1,
         ]);
-
     }
 
     /**
@@ -159,6 +161,7 @@ final class LocationFields extends Fields
         </table>
 
         <?php
+
         $field['message'] = \ob_get_clean();
         $field['label'] .= ' (' . \count($attachedEvents) . ')';
 

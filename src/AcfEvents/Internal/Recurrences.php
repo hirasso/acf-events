@@ -10,26 +10,27 @@ declare(strict_types=1);
 namespace Hirasso\ACFEvents\Internal;
 
 use Exception;
-use WP_Post;
-use InvalidArgumentException;
-use RuntimeException;
 use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
 use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
+use InvalidArgumentException;
+use RuntimeException;
+use WP_Post;
 
 /**
  * Automatically create event recurrences, based on an ACF repeater field containing dates
  */
 final class Recurrences
 {
-    protected static bool $registered = false;
+    private static bool $registered = false;
 
-    protected string $fieldKey;
-    protected string $subFieldKey;
+    private string $fieldKey;
+    private string $subFieldKey;
     private string $postType;
-    protected string $recurrencePostType;
+    private string $recurrencePostType;
 
-    public function __construct(private Core $core)
-    {
+    public function __construct(
+        private Core $core,
+    ) {
         $this->fieldKey = Fields::key(EventFields::FURTHER_DATES);
         $this->subFieldKey = Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME);
         $this->postType = PostTypes::EVENT;
@@ -86,11 +87,9 @@ final class Recurrences
         $this->createRecurrences($postID);
 
         if (\function_exists('pll_get_post_translations')) {
-
             \collect(\pll_get_post_translations($postID))
                 ->reject($postID)
                 ->each(fn($translationID) => $this->createRecurrences($translationID));
-
         }
     }
 
@@ -113,7 +112,7 @@ final class Recurrences
     /**
      * Get all recurrences of an event
      */
-    protected function getRecurrences(int $postID)
+    private function getRecurrences(int $postID)
     {
         if (!$this->core->isOriginalEvent($postID)) {
             return [];
@@ -134,7 +133,7 @@ final class Recurrences
     /**
      * Create clones from an original event
      */
-    protected function createRecurrences($postID): void
+    private function createRecurrences($postID): void
     {
         /** Double-check if this is an original event */
         if (!$this->core->isOriginalEvent($postID)) {
@@ -155,8 +154,7 @@ final class Recurrences
          * Falls back to the raw field value of the post, if $_POST data
          * is not available (e.g. during any edit actions from the edit.php screen)
          */
-        $rawFurtherDates = $_POST['acf'][$this->fieldKey]
-            ?? \get_field($this->fieldKey, $postID, false);
+        $rawFurtherDates = $_POST['acf'][$this->fieldKey] ?? \get_field($this->fieldKey, $postID, false);
 
         /**
          * Create a recurrence for each furtherDates entry
@@ -171,7 +169,7 @@ final class Recurrences
     /**
      * Create an event recurrence entry
      */
-    protected function createRecurrence(int $postID, string $dateTime): void
+    private function createRecurrence(int $postID, string $dateTime): void
     {
         if (!$this->core->isOriginalEvent($postID)) {
             return;
@@ -187,32 +185,27 @@ final class Recurrences
         $taxInput = \collect(\get_post_taxonomies($postID))
             ->reject('post_translations')
             ->mapWithKeys(fn($tax) => [
-                $tax => \collect(\wp_get_object_terms($postID, $tax))
-                    ->map(fn($term) => $term->term_id)
-                    ->all(),
+                $tax => \collect(\wp_get_object_terms($postID, $tax))->map(fn($term) => $term->term_id)->all(),
             ])
             ->all();
 
         $postName = $originalPostArray['post_name'] . '-' . \md5($dateTime);
 
-        $postarr = \collect($originalPostArray)
-            ->only([
-                'post_title',
-                'post_name',
-                'post_status',
-                'post_date',
-            ])
-            ->merge([
-                'post_type' => $this->recurrencePostType,
-                'post_name' => $postName,
-                'post_parent' => $postID,
-                'meta_input' => [
-                    ...$originalMeta, // needed for searching
-                    EventFields::DATE_AND_TIME => $dateTime,
-                ],
-                'tax_input' => $taxInput,
-            ])
-            ->all();
+        $postarr = \collect($originalPostArray)->only([
+            'post_title',
+            'post_name',
+            'post_status',
+            'post_date',
+        ])->merge([
+            'post_type' => $this->recurrencePostType,
+            'post_name' => $postName,
+            'post_parent' => $postID,
+            'meta_input' => [
+                ...$originalMeta, // needed for searching
+                EventFields::DATE_AND_TIME => $dateTime,
+            ],
+            'tax_input' => $taxInput,
+        ])->all();
 
         $result = \wp_insert_post($postarr, true);
 
@@ -254,20 +247,14 @@ final class Recurrences
             return $link;
         }
 
-        return \add_query_arg(
-            'recurrence',
-            $post->ID,
-            \get_permalink($post->post_parent),
-        );
+        return \add_query_arg('recurrence', $post->ID, \get_permalink($post->post_parent));
     }
 
     /**
      * Validate further dates
      */
-    public function acf_validate_value_further_date(
-        string|bool $valid,
-        mixed $value,
-    ): string|bool {
+    public function acf_validate_value_further_date(string|bool $valid, mixed $value): string|bool
+    {
         if (\is_string($valid)) {
             return $valid;
         }
@@ -284,7 +271,7 @@ final class Recurrences
             ->contains($value);
 
         if ($isDuplicate) {
-            return "Each date must be unique";
+            return 'Each date must be unique';
         }
 
         return $valid;

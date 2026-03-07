@@ -33,8 +33,14 @@ final class EventFields extends Fields
 
     protected function addFields()
     {
-        \add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
-        \add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_SORT_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
+        \add_filter(
+            'acf/prepare_field/key=' . self::key(self::LOCATION_NAME),
+            [__CLASS__, 'restrict_debug_field_visibilty'],
+        );
+        \add_filter(
+            'acf/prepare_field/key=' . self::key(self::LOCATION_SORT_NAME),
+            [__CLASS__, 'restrict_debug_field_visibilty'],
+        );
         \add_action('acf/render_field/key=' . self::key(self::LOCATION_ID), [__CLASS__, 'render_field_location_id']);
 
         \acf_add_local_field_group([
@@ -47,7 +53,7 @@ final class EventFields extends Fields
                     'name' => self::DATE_AND_TIME,
                     'type' => 'date_time_picker',
                     'required' => 1,
-                    'wrapper' => [ 'width' => '50' ],
+                    'wrapper' => ['width' => '50'],
                     'relevanssi_exclude' => 0,
                     'display_format' => 'Y-m-d H:i',
                     'return_format' => 'Y-m-d H:i:s',
@@ -210,7 +216,7 @@ final class EventFields extends Fields
             return;
         }
 
-        if (!$location = \get_post($locationID)) {
+        if (!($location = \get_post($locationID))) {
             return;
         }
         $recursing = true;

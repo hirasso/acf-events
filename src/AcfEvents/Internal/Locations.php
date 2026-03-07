@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Hirasso\ACFEvents\Internal;
 
-use InvalidArgumentException;
 use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
 use Hirasso\ACFEvents\Internal\FieldGroups\LocationFields;
+use InvalidArgumentException;
 use WP_Post;
 
 /**
@@ -19,9 +19,11 @@ use WP_Post;
  */
 final class Locations
 {
-    protected static bool $registered = false;
+    private static bool $registered = false;
 
-    public function __construct(private Core $core) {}
+    public function __construct(
+        private Core $core,
+    ) {}
 
     /**
      * Add WordPress hooks
@@ -35,31 +37,26 @@ final class Locations
 
         \add_action('init', [$this, 'add_post_type']);
         \add_filter('update_post_meta', [$this, 'update_post_meta_hook'], 10, 4);
-        \add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
+        \add_action('wp_after_insert_post', [$this, 'wp_after_insert_post'], 20, 2);
         \add_filter('map_meta_cap', [$this, 'prevent_location_deletion'], 10, 4);
         \add_filter('acf/pre_update_value', [$this, 'acf_pre_update_value'], 10, 4);
     }
 
-
     public function add_post_type()
     {
-        $this->core->addPostType(
-            name: PostTypes::LOCATION,
-            slug: 'location',
-            args: [
-                'menu_position' => 0,
-                'menu_icon' => 'dashicons-admin-multisite',
-                'public' => true,
-                'show_ui' => true,
-                'has_archive' => false,
-                'labels' => [
-                    'name' => 'Locations',
-                    'singular_name' => 'Location',
-                    'menu_name' => 'Locations',
-                ],
-                'supports' => ['title', 'revisions', 'author'],
+        $this->core->addPostType(name: PostTypes::LOCATION, slug: 'location', args: [
+            'menu_position' => 0,
+            'menu_icon' => 'dashicons-admin-multisite',
+            'public' => true,
+            'show_ui' => true,
+            'has_archive' => false,
+            'labels' => [
+                'name' => 'Locations',
+                'singular_name' => 'Location',
+                'menu_name' => 'Locations',
             ],
-        );
+            'supports' => ['title', 'revisions', 'author'],
+        ]);
     }
 
     /**
@@ -83,8 +80,8 @@ final class Locations
             throw new InvalidArgumentException("Not an event: $eventID");
         }
 
-        $name = "";
-        $sortName = "";
+        $name = '';
+        $sortName = '';
 
         if ($this->core->isLocation($locationID)) {
             $name = \get_the_title($locationID);
@@ -100,14 +97,11 @@ final class Locations
      */
     public function wp_after_insert_post(int $locationID, WP_Post $post): void
     {
-        if (
-            !$this->core->isLocation($post)
-            || !$this->core->isVisiblePostStatus($locationID)
-        ) {
+        if (!$this->core->isLocation($post) || !$this->core->isVisiblePostStatus($locationID)) {
             return;
         }
 
-        \remove_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20);
+        \remove_action('wp_after_insert_post', [$this, 'wp_after_insert_post'], 20);
 
         \do_action('acfe/save_location', $locationID, $post);
 
@@ -115,7 +109,7 @@ final class Locations
             $this->updateEvent($eventID, $locationID);
         }
 
-        \add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
+        \add_action('wp_after_insert_post', [$this, 'wp_after_insert_post'], 20, 2);
     }
 
     /**
@@ -129,9 +123,7 @@ final class Locations
 
         $postID = (int) $args[0];
 
-        return \count($this->core->getEventsAtLocation($postID, 1))
-            ? ['do_not_allow']
-            : $caps;
+        return \count($this->core->getEventsAtLocation($postID, 1)) ? ['do_not_allow'] : $caps;
     }
 
     /**
@@ -147,5 +139,4 @@ final class Locations
         }
         return $check;
     }
-
 }

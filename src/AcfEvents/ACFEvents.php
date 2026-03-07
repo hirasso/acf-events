@@ -65,7 +65,7 @@ final readonly class ACFEvents
             \get_the_title($locationID),
             \get_field(LocationFields::AREA, $locationID) ?: '',
         ])
-        ->filter($this->core->isFilledString(...))
-        ->join(', ');
+            ->filter($this->core->isFilledString(...))
+            ->join(', ');
     }
 }

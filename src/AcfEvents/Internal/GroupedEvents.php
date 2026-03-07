@@ -5,6 +5,8 @@
  * https://rassohilber.com
  */
 
+declare(strict_types=1);
+
 namespace Hirasso\ACFEvents\Internal;
 
 final class GroupedEvents

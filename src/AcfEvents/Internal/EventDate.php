@@ -50,10 +50,10 @@ final readonly class EventDate
     public function toFormattedString()
     {
         $format = \collect([
-            \get_option('date_format', ''),
-            \get_option('time_format', ''),
+            \get_option('date_format', default_value: ''),
+            \get_option('time_format', default_value: ''),
         ])
-            ->filter(fn($format) => !empty(\trim($format)))
+            ->filter(static fn($format) => \trim($format) !== '')
             ->join(', ');
 
         return \date_i18n($format, $this->date->getTimestamp());

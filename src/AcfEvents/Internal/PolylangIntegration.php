@@ -9,20 +9,20 @@ declare(strict_types=1);
 
 namespace Hirasso\ACFEvents\Internal;
 
+use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
 use RuntimeException;
 use WP_Term;
-use WP_Post;
-use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
-use Hirasso\ACFEvents\Internal\FieldGroups\LocationFields;
 
 /**
  * Polylang integration for ACFEvents
  */
 final class PolylangIntegration
 {
-    protected static bool $registered = false;
+    private static bool $registered = false;
 
-    public function __construct(private Core $core) {}
+    public function __construct(
+        private Core $core,
+    ) {}
 
     public function register()
     {
@@ -56,7 +56,7 @@ final class PolylangIntegration
     /**
      * Check if Polylang is active
      */
-    protected function isPolylangActive(): bool
+    private function isPolylangActive(): bool
     {
         return \function_exists('PLL');
     }
@@ -64,7 +64,7 @@ final class PolylangIntegration
     /**
      * Check if Polylang PRO is active
      */
-    protected function isPolylangProActive(): bool
+    private function isPolylangProActive(): bool
     {
         return $this->isPolylangActive() && !empty(\PLL()->translate_slugs);
     }
@@ -72,7 +72,7 @@ final class PolylangIntegration
     /**
      * Get all active languages
      */
-    protected function getActiveLanguages()
+    private function getActiveLanguages()
     {
         return \collect(\pll_the_languages(['raw' => true]))->pluck('slug')->all();
     }
@@ -80,21 +80,20 @@ final class PolylangIntegration
     /**
      * Get missing post translations
      */
-    protected function getMissingPostTranslations(int $postID): array
+    private function getMissingPostTranslations(int $postID): array
     {
-        return \collect($this->getActiveLanguages())
-            ->diff(\array_keys(\pll_get_post_translations($postID)))
-            ->all();
+        return \collect($this->getActiveLanguages())->diff(\array_keys(\pll_get_post_translations($postID)))->all();
     }
 
     /**
      * Ensure a translation exists for a post
      */
-    protected function createPostTranslation(int $postID, string $lang): int
+    private function createPostTranslation(int $postID, string $lang): int
     {
         if (
-            $existingTranslation = \collect(\pll_get_post_translations($postID))
-            ->first(fn($_, $translationLanguage) => $translationLanguage === $lang)
+            $existingTranslation = \collect(\pll_get_post_translations($postID))->first(
+                fn($_, $translationLanguage) => $translationLanguage === $lang,
+            )
         ) {
             return $existingTranslation;
         }
@@ -111,21 +110,16 @@ final class PolylangIntegration
         $taxInput = \collect(\get_post_taxonomies($postID))
             ->diff(['post_translations'])
             ->mapWithKeys(fn($tax) => [
-                $tax => \collect(\wp_get_object_terms($postID, $tax))
-                    ->map(fn($term) => $term->term_id)
-                    ->all(),
+                $tax => \collect(\wp_get_object_terms($postID, $tax))->map(fn($term) => $term->term_id)->all(),
             ])
             ->replace(['language' => [$language->term_id]])
             ->all();
 
-        $postarr = \collect($originalPostArray)
-            ->except(['ID', 'post_name'])
-            ->replaceRecursive([
-                'post_title' => $translatedTitle ?: \get_the_title($postID),
-                'meta_input' => $originalMeta,
-                'tax_input' => $taxInput,
-            ])
-            ->all();
+        $postarr = \collect($originalPostArray)->except(['ID', 'post_name'])->replaceRecursive([
+            'post_title' => $translatedTitle ?: \get_the_title($postID),
+            'meta_input' => $originalMeta,
+            'tax_input' => $taxInput,
+        ])->all();
 
         $translationID = \wp_insert_post($postarr, true);
 
@@ -145,13 +139,6 @@ final class PolylangIntegration
         // ]);
 
         return $translationID;
-    }
-
-    /** @return \wpdb */
-    protected function wpdb()
-    {
-        global $wpdb;
-        return $wpdb;
     }
 
     /**
@@ -187,7 +174,10 @@ final class PolylangIntegration
         }
 
         /** @phpstan-ignore property.notFound */
-        $link = \PLL()->translate_slugs->slugs_model->switch_translated_slug($link, $termLanguage, "archive_{$postType}");
+        $link = \PLL()
+            ->translate_slugs
+            ->slugs_model
+            ->switch_translated_slug($link, $termLanguage, "archive_{$postType}");
         $link = \PLL()->links_model->switch_language_in_link($link, $termLanguage);
 
         return $link;
