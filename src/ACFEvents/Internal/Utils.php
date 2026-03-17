@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hirasso\ACFEvents\Internal;
 
+use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
 use wpdb;
 
 final class Utils
@@ -25,25 +26,43 @@ final class Utils
     /**
      * Get all years for which events exist
      *
+     * @param string|list<string> $postTypes
+     * @param list<string> $postStati
      * @return list<int>
      */
-    public function getYears(string $postType): array
+    public function getYears(string|array $postTypes, array $postStati = ['publish']): array
     {
         $wpdb = $this->wpdb();
 
-        $years = $wpdb->get_col(
-            $wpdb->prepare(
-                <<<SQL
-                SELECT DISTINCT YEAR(post_date)
-                FROM {$wpdb->posts}
-                WHERE post_type = %s
-                AND post_status = 'publish'
-                ORDER BY post_date DESC
-                SQL,
-                $postType,
-            ),
-        );
+        $postTypes = (array) $postTypes;
 
-        return collect($years)->map(absint(...))->all();
+        $metaKey = EventFields::DATE_AND_TIME;
+
+        $placeholders = fn(array $values) => collect($values)
+            ->map(fn() => '%s')
+            ->implode(', ');
+
+        $query = $wpdb->prepare(
+            <<<SQL
+            SELECT DISTINCT YEAR(pm.meta_value)
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm
+                ON pm.post_id = p.ID
+                AND pm.meta_key = '%s'
+            WHERE p.post_type IN ({$placeholders($postTypes)})
+            AND p.post_status IN ({$placeholders($postStati)})
+            ORDER BY pm.meta_value DESC
+            SQL,
+            $metaKey,
+            ...[
+                ...$postTypes,
+                ...$postStati,
+            ],
+        );
+        dd($query);
+
+        return collect($wpdb->get_col($query))
+            ->map(absint(...))
+            ->all();
     }
 }
