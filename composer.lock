@@ -4,8 +4,63 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5382d4d958a62ba88c23ba152a90871",
+    "content-hash": "ed37d90022a9a8fff45862de10dc12f8",
     "packages": [
+        {
+            "name": "hirasso/attr",
+            "version": "v4.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hirasso/attr.git",
+                "reference": "cf152dcdd9600147c8c1c5c008eca28ceeece019"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hirasso/attr/zipball/cf152dcdd9600147c8c1c5c008eca28ceeece019",
+                "reference": "cf152dcdd9600147c8c1c5c008eca28ceeece019",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.2 || ~8.3 || ~8.4 || ~8.5 || ~8.6"
+            },
+            "require-dev": {
+                "carthage-software/mago": "^1.8",
+                "pestphp/pest": "^3.7",
+                "pestphp/pest-plugin-watch": "^3.0",
+                "symfony/var-dumper": "^7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Hirasso\\Attr\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rasso Hilber",
+                    "email": "mail@rassohilber.com"
+                }
+            ],
+            "description": "A tiny HTML attribute generator written in PHP. Great for projects using tailwindcss and Alpine.js 🎡",
+            "support": {
+                "issues": "https://github.com/hirasso/attr/issues",
+                "source": "https://github.com/hirasso/attr/tree/v4.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/hirasso",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-15T20:45:00+00:00"
+        },
         {
             "name": "illuminate/collections",
             "version": "v12.55.0",

@@ -15,6 +15,7 @@ use Hirasso\ACFEvents\Internal\FieldGroups\LocationFields;
 use Hirasso\ACFEvents\Internal\Locations;
 use Hirasso\ACFEvents\Internal\PolylangIntegration;
 use Hirasso\ACFEvents\Internal\Recurrences;
+use Hirasso\ACFEvents\Internal\Utils;
 use WP_Post;
 
 /**
@@ -26,8 +27,7 @@ final readonly class ACFEvents
 
     public function __construct()
     {
-        $core = new Core();
-        $core->register();
+        $core = (new Core(new Utils()))->register();
         (new EventFields($core))->register();
         (new LocationFields($core))->register();
         (new Locations($core))->register();
