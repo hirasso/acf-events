@@ -54,12 +54,12 @@
     "wordpress-install-dir": "vendor/.wp/core"
   },
   "repositories": {
-    "wpackagist": {
+    "wp-composer": {
       "type": "composer",
-      "url": "https://wpackagist.org",
+      "url": "https://repo.wp-composer.com",
       "only": [
-        "wpackagist-plugin/*",
-        "wpackagist-theme/*"
+        "wp-plugin/*",
+        "wp-theme/*"
       ]
     }
   },
@@ -68,8 +68,8 @@
     "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.1",
     "roots/wordpress": "^6.9",
-    "wpackagist-plugin/advanced-custom-fields": "^6.7",
-    "wpackagist-plugin/classic-editor": "^1.6",
-    "wpackagist-plugin/polylang": "^3.7"
+    "wp-plugin/advanced-custom-fields": "^6.7",
+    "wp-plugin/classic-editor": "^1.6",
+    "wp-plugin/polylang": "^3.7"
   }
 }
