@@ -12,7 +12,7 @@
     "wp-env:cli": "pnpm run wp-env run cli --env-cwd=wp-content/plugins/acf-events",
     "wp-env:cli:tests": "pnpm run wp-env run tests-cli --env-cwd=wp-content/plugins/acf-events",
     "wp-env:open": "open http://localhost:2233",
-    "wp-env:open:tests": "open http://localhost:2233",
+    "wp-env:open:tests": "open http://localhost:22333",
     "test": "pnpm test:pest && pnpm wp-env clean && pnpm wp-env start && pnpm test:e2e",
     "test:pest": "pnpm run wp-env:cli:tests vendor/bin/pest --no-coverage",
     "test:pest:ci": "pnpm run wp-env:cli:tests vendor/bin/pest --coverage-clover coverage.xml",
