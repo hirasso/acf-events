@@ -17,6 +17,7 @@ inputs:
 
 runs:
   using: composite
+
   steps:
     - name: Setup PNPM
       uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
@@ -48,13 +49,13 @@ runs:
 
     - name: Setup and Start wp-env
       if: ${{ inputs.wp-env == 'true' }}
+      env:
+        WP_ENV_PHP_VERSION: ${{ inputs.php }}
+        WP_ENV_CORE: 'WordPress/WordPress'
       shell: bash
-      # Setting "core" to `null` fixes hanging wp-env in CI
-      # @see https://github.com/WordPress/gutenberg/issues/44338
       run: |
-        # echo '{"core": null, "phpVersion": "${{ inputs.php-version }}"}' > .wp-env.override.json
-        WP_ENV_CORE=null WP_ENV_PHP_VERSION=${{ inputs.php-version }} pnpm run wp-env start
-        WP_ENV_CORE=null WP_ENV_PHP_VERSION=${{ inputs.php-version }} pnpm run wp-env-test start
+        pnpm run wp-env start
+        pnpm run wp-env-test start
 
     - name: Cache Playwright
       if: ${{ inputs.playwright == 'true' }}
