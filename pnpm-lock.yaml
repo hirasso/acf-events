@@ -23,12 +23,18 @@ importers:
       '@wordpress/env':
         specifier: ^11.1.0
         version: 11.1.0(@types/node@25.5.0)
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
         specifier: ^16.4.0
         version: 16.4.0
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
 
 packages:
 
