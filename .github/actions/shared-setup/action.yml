@@ -58,8 +58,11 @@ runs:
         pnpm run wp-env-test start
 
     - name: wp-env container debug information
+      if: ${{ inputs.wp-env == 'true' }}
       shell: bash
       run: |
+          pnpm run wp-env run php --version
+          pnpm run wp-env run cli wp core version
           pnpm run wp-env-test run php --version
           pnpm run wp-env-test run cli wp core version
 
