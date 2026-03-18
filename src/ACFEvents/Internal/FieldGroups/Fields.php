@@ -17,19 +17,28 @@ use Hirasso\ACFEvents\Internal\Core;
  */
 abstract class Fields
 {
-    public function __construct(protected Core $core) {}
-    /**
-     * Register hooks
-     */
-    public function register()
+    private static array $instances = [];
+
+    final protected function __construct(protected Core $core) {}
+
+    final public static function init(Core $core): static
     {
+        return self::$instances[static::class] ??= new static($core);
+    }
+
+    final public function addHooks(): static
+    {
+        if (\has_action('acf/include_fields', [$this, 'acf_include_fields'])) {
+            return $this;
+        }
         \add_action('acf/include_fields', [$this, 'acf_include_fields']);
+        return $this;
     }
 
     /**
      * Include ACF fields
      */
-    public function acf_include_fields()
+    final public function acf_include_fields()
     {
         if (! \function_exists('acf_add_local_field_group')) {
             throw new Exception("'acf_add_local_field_group()' is not defined");

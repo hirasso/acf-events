@@ -2,7 +2,6 @@
 
 namespace Hirasso\ACFEvents\Tests\Integration;
 
-use Hirasso\ACFEvents\ACFEvents;
 use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
 use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
 use Hirasso\ACFEvents\Internal\PostTypes;
@@ -13,7 +12,7 @@ class BasicTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        new ACFEvents();
+        acf_events();
     }
 
     public function test_has_required_plugins(): void
