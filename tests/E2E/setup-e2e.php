@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: e2e tests bootstrap plugin
+ * Plugin Name: ACF Events Setup Plugin
  * Description: Prepares the @wordpress/env environment for e2e tests
  */
 
@@ -12,7 +12,7 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-/** plugins are not immediately activated. We need to wait for them */
+/** Load the composer autoloader from acf-events.php */
 require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
 
 /**

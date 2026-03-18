@@ -40,6 +40,9 @@ final class Setup
             return;
         }
 
+        /** initialize the library */
+        acf_events();
+
         /** we don't need the polylang wizard */
         delete_transient('pll_activation_redirect');
 
