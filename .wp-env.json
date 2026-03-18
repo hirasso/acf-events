@@ -6,12 +6,12 @@
   "plugins": [
     "./vendor/.wp/plugins/advanced-custom-fields",
     "./vendor/.wp/plugins/classic-editor",
-    "./vendor/.wp/plugins/polylang",
-    "./tests/E2E"
+    "./vendor/.wp/plugins/polylang"
   ],
   "port": 2233,
   "mappings": {
-    "wp-content/plugins/acf-events": "."
+    "wp-content/plugins/acf-events": ".",
+    "wp-content/plugins/acf-events-setup": "./tests/E2E"
   },
   "testsEnvironment": false,
   "config": {
