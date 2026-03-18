@@ -8,9 +8,6 @@ inputs:
   playwright:
     description: Should Playwright be installed?
     default: false
-  wp-env:
-    description: Should wp-env be set up and started?
-    default: true
   php:
     description: Should PHP be set up?
     default: true
@@ -46,25 +43,6 @@ runs:
     - name: Install Composer Dependencies
       if: ${{ inputs.php == 'true' }}
       uses: ramsey/composer-install@a35c6ebd3d08125aaf8852dff361e686a1a67947 # 3.2.0
-
-    - name: Setup and Start wp-env
-      if: ${{ inputs.wp-env == 'true' }}
-      env:
-        WP_ENV_PHP_VERSION: ${{ inputs.php-version }}
-        WP_ENV_CORE: 'WordPress/WordPress'
-      shell: bash
-      run: |
-        pnpm run wp-env start
-        pnpm run wp-env-test start
-
-    - name: wp-env container debug information
-      if: ${{ inputs.wp-env == 'true' }}
-      shell: bash
-      run: |
-          pnpm run wp-env run php --version
-          pnpm run wp-env run cli wp core version
-          pnpm run wp-env-test run php --version
-          pnpm run wp-env-test run cli wp core version
 
     - name: Cache Playwright
       if: ${{ inputs.playwright == 'true' }}
