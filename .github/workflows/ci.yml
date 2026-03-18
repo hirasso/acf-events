@@ -65,6 +65,23 @@ jobs:
           php-version: 8.3
           playwright: true
 
+      - name: Cache Playwright
+        id: playwright-cache
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install Playwright and its dependencies
+        if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: npx playwright install chromium webkit firefox --with-deps
+
+      - name: Install just Playwright's dependencies
+        if: ${{ steps.playwright-cache.outputs.cache-hit == 'true' }}
+        shell: bash
+        run: npx playwright install-deps
+
       - name: Start wp-env-test container
         run: |
           pnpm run wp-env-test start

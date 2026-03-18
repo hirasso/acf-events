@@ -5,9 +5,6 @@ inputs:
   php-version:
     description: The PHP version to install
     default: 8.3
-  playwright:
-    description: Should Playwright be installed?
-    default: false
   php:
     description: Should PHP be set up?
     default: true
@@ -43,22 +40,4 @@ runs:
     - name: Install Composer Dependencies
       if: ${{ inputs.php == 'true' }}
       uses: ramsey/composer-install@a35c6ebd3d08125aaf8852dff361e686a1a67947 # 3.2.0
-
-    - name: Cache Playwright
-      if: ${{ inputs.playwright == 'true' }}
-      id: playwright-cache
-      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-      with:
-        path: ~/.cache/ms-playwright
-        key: playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-    - name: Install Playwright and its dependencies
-      if: ${{ inputs.playwright == 'true' && steps.playwright-cache.outputs.cache-hit != 'true' }}
-      shell: bash
-      run: npx playwright install chromium webkit firefox --with-deps
-
-    - name: Install just Playwright's dependencies
-      if: ${{ inputs.playwright == 'true' && steps.playwright-cache.outputs.cache-hit == 'true' }}
-      shell: bash
-      run: npx playwright install-deps
 
