@@ -3,7 +3,6 @@
 /**
  * Plugin Name: e2e tests bootstrap plugin
  * Description: Prepares the @wordpress/env environment for e2e tests
- * Version: 10000.0.0
  */
 
 namespace Hirasso\ACFEvents\Tests\E2E;
@@ -12,6 +11,9 @@ namespace Hirasso\ACFEvents\Tests\E2E;
 if (!\defined('ABSPATH')) {
     exit;
 }
+
+/** plugins are not immediately installed. We need to wait for them */
+require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
 
 /**
  * Check what env we are currently in
@@ -29,6 +31,5 @@ function getCurrentEnv(): ?string
 }
 
 add_action('after_setup_theme', function () {
-    acf_events();
     new Setup();
 });

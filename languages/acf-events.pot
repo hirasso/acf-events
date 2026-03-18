@@ -39,36 +39,36 @@ msgstr ""
 msgid "https://rassohilber.com"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:604
+#: src/AcfEvents/Internal/Core.php:604
 msgid "Minutes"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:649
+#: src/AcfEvents/Internal/Core.php:649
 msgid "Today"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:650
+#: src/AcfEvents/Internal/Core.php:650
 msgid "Yesterday"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:651
+#: src/AcfEvents/Internal/Core.php:651
 msgid "Tomorrow"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:841
-#: src/ACFEvents/Internal/Core.php:845
+#: src/AcfEvents/Internal/Core.php:841
+#: src/AcfEvents/Internal/Core.php:845
 msgid "Location"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:842
+#: src/AcfEvents/Internal/Core.php:842
 msgid "Dates"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:846
+#: src/AcfEvents/Internal/Core.php:846
 msgid "Date"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:922
+#: src/AcfEvents/Internal/Core.php:922
 #, php-format
 msgid "Year %s"
 msgstr ""
