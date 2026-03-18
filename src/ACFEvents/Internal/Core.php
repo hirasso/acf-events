@@ -318,19 +318,21 @@ final class Core
      */
     public function prepare_archive_main_query(WP_Query $query): void
     {
-        if (\is_admin() || !$query->is_main_query() || !$query->is_archive()) {
+        if (!$query->is_main_query() || !$query->is_archive()) {
             return;
         }
 
-        $postType = $this->guessPostType($query);
-
-        if ($postType !== PostTypes::EVENT) {
+        if ($this->guessPostType($query) !== PostTypes::EVENT) {
             return;
         }
 
-        $query->query_vars = \collect($query->query_vars)
-            ->replaceRecursive($this->getArchiveArgs($query))
-            ->all();
+        $query->set('year', get_query_var('year') ?: current_time('Y'));
+
+        if (!\is_admin()) {
+            $query->query_vars = \collect($query->query_vars)
+                ->replaceRecursive($this->getArchiveArgs($query))
+                ->all();
+        }
     }
 
     /**
@@ -900,26 +902,30 @@ final class Core
             return;
         }
 
-        $years = $this->utils->getYears($postType);
+        $years = $this->utils->getYears($postType, null);
         if (empty($years)) {
             return;
         }
 
-        $queriedYear = \get_query_var('year') ?: $years[0];
+        $selectedYear = (int) get_query_var('year');
 
-        \ob_start(); ?>
+        ob_start(); ?>
         <select name="year">
 
             <?php foreach ($years as $year) : ?>
-                <option <?= \attr([
-                    'selected' => $year === $queriedYear,
+                <option <?= attr([
+                    'selected' => $year === $selectedYear,
                     'value' => $year,
                 ]) ?>>
-                    <?= $year === $queriedYear ? sprintf(__('Year: %s', 'acf-events'), $year) : $year  ?>
+                    <?php
+                        echo $year === $selectedYear
+                        ? sprintf(__('Year %s', 'acf-events'), $year)
+                        : $year;
+                ?>
                 </option>
             <?php endforeach; ?>
 
         </select>
-        <?php echo \ob_get_clean();
+        <?php echo ob_get_clean();
     }
 }
