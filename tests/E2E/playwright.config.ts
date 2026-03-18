@@ -33,7 +33,7 @@ export const baseURL = new URL(getStatus().urls.development);
  */
 export default defineConfig({
   /* Run this file before starting the tests */
-  // globalSetup: path.resolve(__dirname, './playwright.setup.ts'),
+  // globalSetup: require.resolve('./playwright.setup.ts'),
   /* Run this file after all the tests have finished */
   // globalTeardown: path.resolve(__dirname, './playwright.teardown.ts'),
   /* Directory containing the test files */
