@@ -15,6 +15,8 @@ if (!\defined('ABSPATH')) {
 /** Load the composer autoloader from acf-events.php */
 require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
 
+dump(plugin_basename(__FILE__));
+
 /**
  * Check what env we are currently in
  * @return null|"development"|"tests"

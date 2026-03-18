@@ -15,7 +15,7 @@ const dd = function (...args: any[]) {
 };
 
 function getStatus() {
-  const output = execSync("pnpm run wp-env status --json", {
+  const output = execSync("pnpm run wp-env-test status --json", {
     encoding: "utf-8",
   });
   const json = output.split("\n").find((line) => line.trim().startsWith("{"));
@@ -33,7 +33,7 @@ export const baseURL = new URL(getStatus().urls.development);
  */
 export default defineConfig({
   /* Run this file before starting the tests */
-  // globalSetup: require.resolve('./playwright.setup.ts'),
+  globalSetup: require.resolve('./playwright.setup.ts'),
   /* Run this file after all the tests have finished */
   // globalTeardown: path.resolve(__dirname, './playwright.teardown.ts'),
   /* Directory containing the test files */
@@ -121,7 +121,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run wp-env start',
+    command: 'pnpm run wp-env-test start',
     url: baseURL.href,
     timeout: 120_000,
     reuseExistingServer: true,
