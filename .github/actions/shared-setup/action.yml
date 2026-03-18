@@ -50,7 +50,7 @@ runs:
     - name: Setup and Start wp-env
       if: ${{ inputs.wp-env == 'true' }}
       env:
-        WP_ENV_PHP_VERSION: ${{ inputs.php }}
+        WP_ENV_PHP_VERSION: ${{ inputs.php-version }}
         WP_ENV_CORE: 'WordPress/WordPress'
       shell: bash
       run: |
