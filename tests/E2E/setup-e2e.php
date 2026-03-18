@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: e2e tests bootstrap plugin
- * Description: Prepares the @wordpress/env tests environment for e2e tests
+ * Description: Prepares the @wordpress/env environment for e2e tests
  * Version: 10000.0.0
  */
 
-namespace RH\AdminUtils\Tests\E2E;
+namespace Hirasso\ACFEvents\Tests\E2E;
 
 /** Exit if accessed directly */
 if (!\defined('ABSPATH')) {
