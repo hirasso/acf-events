@@ -52,9 +52,9 @@ runs:
       # Setting "core" to `null` fixes hanging wp-env in CI
       # @see https://github.com/WordPress/gutenberg/issues/44338
       run: |
-        echo '{"core": null, "phpVersion": "${{ inputs.php-version }}"}' > .wp-env.override.json
-        pnpm run wp-env start
-        pnpm run wp-env-test start
+        # echo '{"core": null, "phpVersion": "${{ inputs.php-version }}"}' > .wp-env.override.json
+        WP_ENV_CORE=null WP_ENV_PHP_VERSION=${{ inputs.php-version }} pnpm run wp-env start
+        WP_ENV_CORE=null WP_ENV_PHP_VERSION=${{ inputs.php-version }} pnpm run wp-env-test start
 
     - name: Cache Playwright
       if: ${{ inputs.playwright == 'true' }}
