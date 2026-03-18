@@ -66,9 +66,6 @@ jobs:
           playwright: true
 
       - name: Start wp-env container
-        env:
-          WP_ENV_PHP_VERSION: 8.3
-          WP_ENV_CORE: 'WordPress/WordPress'
         run: |
           pnpm run wp-env start
           pnpm run wp-env:cli php --version
