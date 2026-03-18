@@ -1,7 +1,6 @@
 {
   "name": "hirasso/acf-events",
   "description": "A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆",
-  "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
