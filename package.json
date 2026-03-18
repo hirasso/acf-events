@@ -13,7 +13,7 @@
     "wp-env:cli": "wp-env run cli --env-cwd=acf-events",
     "wp-env-test:cli": "pnpm wp-env-test run cli --env-cwd=wp-content/plugins/acf-events",
     "wp-env:launch": "open $(wp-env status --json | jq -r '.urls.development')",
-    "wp-env-test:open": "open $(wp-env --config .wp-env.test.json status --json | jq -r '.urls.development')",
+    "wp-env-test:launch": "open $(wp-env --config .wp-env.test.json status --json | jq -r '.urls.development')",
     "test": "pnpm run test:pest && wp-env reset && wp-env start && pnpm run test:e2e",
     "test:pest": "pnpm run wp-env-test:cli vendor/bin/pest --no-coverage",
     "test:pest:ci": "pnpm run wp-env-test:cli vendor/bin/pest --coverage-clover coverage.xml",
