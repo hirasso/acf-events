@@ -93,30 +93,15 @@ export default defineConfig({
   /* Configure projects for setup and major browsers */
   projects: [
     { name: "setup", testMatch: "auth.setup.ts" },
-    {
-      name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"],
-        storageState: authFile,
-      },
+    ...([
+      { name: "chromium", device: devices["Desktop Chrome"] },
+      { name: "firefox", device: devices["Desktop Firefox"] },
+      { name: "webkit", device: devices["Desktop Safari"] },
+    ].map(({ name, device }) => ({
+      name,
+      use: { ...device, storageState: authFile },
       dependencies: ["setup"],
-    },
-    {
-      name: "firefox",
-      use: {
-        ...devices["Desktop Firefox"],
-        storageState: authFile,
-      },
-      dependencies: ["setup"],
-    },
-    {
-      name: "webkit",
-      use: {
-        ...devices["Desktop Safari"],
-        storageState: authFile,
-      },
-      dependencies: ["setup"],
-    },
+    }))),
   ],
 
   /* Run your local dev server before starting the tests */
