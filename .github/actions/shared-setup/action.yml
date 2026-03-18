@@ -1,0 +1,75 @@
+name: Run Shared Setup
+description: Setup everything required
+
+inputs:
+  php-version:
+    description: The PHP version to install
+    default: 8.3
+  playwright:
+    description: Should Playwright be installed?
+    default: false
+  wp-env:
+    description: Should wp-env be set up and started?
+    default: true
+  php:
+    description: Should PHP be set up?
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PNPM
+      uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      with:
+        version: latest
+
+    - name: Setup Node.js
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      with:
+        node-version-file: package.json
+        cache: pnpm
+
+    - name: Install Dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    # HAS to run after installing node.js dependencies
+    - name: Setup PHP
+      if: ${{ inputs.php == 'true' }}
+      uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
+      with:
+        php-version: ${{ inputs.php-version }}
+        tools: composer:v2
+        coverage: xdebug
+
+    - name: Install Composer Dependencies
+      if: ${{ inputs.php == 'true' }}
+      uses: ramsey/composer-install@a35c6ebd3d08125aaf8852dff361e686a1a67947 # 3.2.0
+
+    - name: Setup and Start wp-env
+      if: ${{ inputs.wp-env == 'true' }}
+      shell: bash
+      # Setting "core" to `null` fixes hanging wp-env in CI
+      # @see https://github.com/WordPress/gutenberg/issues/44338
+      run: |
+        echo '{"core": null, "phpVersion": "${{ inputs.php-version }}"}' > .wp-env.override.json
+        pnpm run wp-env start
+
+    - name: Cache Playwright
+      if: ${{ inputs.playwright == 'true' }}
+      id: playwright-cache
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+    - name: Install Playwright and its dependencies
+      if: ${{ inputs.playwright == 'true' && steps.playwright-cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: npx playwright install chromium webkit firefox --with-deps
+
+    - name: Install just Playwright's dependencies
+      if: ${{ inputs.playwright == 'true' && steps.playwright-cache.outputs.cache-hit == 'true' }}
+      shell: bash
+      run: npx playwright install-deps
+

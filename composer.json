@@ -1,6 +1,6 @@
 {
   "name": "hirasso/acf-events",
-  "description": "A Composer library to manage events, recurrences and locations using WordPress+Advanced Custom Fields 📆",
+  "description": "A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -70,7 +70,13 @@
     "phpstan/phpstan": "^2.1",
     "roots/wordpress": "^6.9",
     "wp-plugin/advanced-custom-fields": "^6.7",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "vinkla/extended-acf": "^14.6",
     "wp-plugin/classic-editor": "^1.6",
-    "wp-plugin/polylang": "^3.7"
+    "wp-plugin/polylang": "^3.7",
+    "wp-cli/wp-cli": "^2.12",
+    "wp-phpunit/wp-phpunit": "^6.9",
+    "wp-theme/twentytwentyfive": "^1.4",
+    "yoast/wp-test-utils": "^1.2"
   }
 }

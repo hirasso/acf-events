@@ -4,3 +4,4 @@ parameters:
     - src/
   scanDirectories:
     - vendor/.wp
+    - vendor/wp-cli/wp-cli

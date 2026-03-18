@@ -1,0 +1,18 @@
+<?php
+
+namespace RH\AdminUtils\Tests\Pest;
+
+use Yoast\WPTestUtils\BrainMonkey\TestCase;
+
+class BasicTest extends TestCase
+{
+    public function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    public function test_has_required_plugins(): void
+    {
+        $this->assertTrue(function_exists('acf_get_field'));
+    }
+}

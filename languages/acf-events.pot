@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://github.com/hirasso/acf-events/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: acf-events\n"
+
+#: src/ACFEvents/Internal/Core.php:604
+msgid "Minutes"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:649
+msgid "Today"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:650
+msgid "Yesterday"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:651
+msgid "Tomorrow"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:841
+#: src/ACFEvents/Internal/Core.php:845
+msgid "Location"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:842
+msgid "Dates"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:846
+msgid "Date"
+msgstr ""
+
+#: src/ACFEvents/Internal/Core.php:922
+#, php-format
+msgid "Year %s"
+msgstr ""

@@ -1,6 +1,6 @@
 # ACF Events
 
-**A Composer library to manage events, recurrences and locations using WordPress+Advanced Custom Fields 📆**
+**A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆**
 
 ## Installation
 
