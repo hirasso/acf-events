@@ -6,17 +6,27 @@ import path from "node:path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/** The URL of the wp-env development site */
-import wpEnv from "../../.wp-env.json" with { type: 'json' };
+import { execSync } from "node:child_process";
+import { log } from "console";
 
-const devURL = `http://localhost:${wpEnv.env.development.port}`;
-const testURL = `http://localhost:${wpEnv.env.tests.port}`;
+const dd = function (...args: any[]) {
+  log(...args);
+  process.exit(1);
+};
+
+function getStatus() {
+  const output = execSync("pnpm run wp-env status --json", {
+    encoding: "utf-8",
+  });
+  const json = output.split("\n").find((line) => line.trim().startsWith("{"));
+  return json ? JSON.parse(json) : undefined;
+}
 
 export const authFile = path.join(__dirname, "playwright/.auth/user.json");
 
 const isCI = Boolean(process.env.CI);
 
-export const baseURL = new URL(isCI ? devURL : testURL);
+export const baseURL = new URL(getStatus().urls.development);
 
 /**
  * See https://playwright.dev/website/test-configuration.
@@ -62,22 +72,22 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/website/api/class-testoptions. */
   use: {
     baseURL: baseURL.href,
-		headless: true,
-		viewport: {
-			width: 960,
-			height: 700,
-		},
-		ignoreHTTPSErrors: true,
-		locale: 'en-US',
-		contextOptions: {
-			reducedMotion: 'reduce',
-			strictSelectors: true,
-		},
-		storageState: process.env.STORAGE_STATE_PATH,
-		actionTimeout: 10_000, // 10 seconds.
-		trace: 'retain-on-failure',
-		screenshot: 'only-on-failure',
-		video: 'on-first-retry',
+    headless: true,
+    viewport: {
+      width: 960,
+      height: 700,
+    },
+    ignoreHTTPSErrors: true,
+    locale: "en-US",
+    contextOptions: {
+      reducedMotion: "reduce",
+      strictSelectors: true,
+    },
+    storageState: process.env.STORAGE_STATE_PATH,
+    actionTimeout: 10_000, // 10 seconds.
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    video: "on-first-retry",
   },
 
   /* Configure projects for setup and major browsers */
@@ -111,8 +121,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    url: baseURL.href,
-    command: "pnpm run wp-env start --update",
+    port: baseURL.port,
     timeout: 120_000,
     reuseExistingServer: true,
   },

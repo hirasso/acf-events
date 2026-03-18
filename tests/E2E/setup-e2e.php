@@ -31,11 +31,5 @@ function getCurrentEnv(): ?string
 add_action('after_setup_theme', function () {
     $env = getCurrentEnv();
 
-    // /** prettydump */
-    // echo '<pre class="dump">';
-    // var_dump(compact('env'));
-    // echo '</pre>';
-    // exit;
-
     new Setup();
 });

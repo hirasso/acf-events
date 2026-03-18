@@ -13,5 +13,12 @@
 
 /**
  * This file only exists to make @wordpress/env happy.
- * You need to load the library manually via composer.
+ * You need to load the library manually yourself
  */
+
+/**
+ * Require the autoloader if it exists (in dev)
+ */
+if (is_readable(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+};
