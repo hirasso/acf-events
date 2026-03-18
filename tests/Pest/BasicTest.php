@@ -1,6 +1,6 @@
 <?php
 
-namespace RH\AdminUtils\Tests\Pest;
+namespace Hirasso\ACFEvents\Tests\Pest;
 
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 

@@ -9,13 +9,13 @@
     "make-pot": "tools/make-pot.sh",
     "version": "pnpm changeset version && tools/cli/cli.js version:patch",
     "wp-env": "wp-env",
-    "wp-env:cli": "pnpm run wp-env run cli --env-cwd=wp-content/plugins/acf-events",
-    "wp-env:cli:tests": "pnpm run wp-env run tests-cli --env-cwd=wp-content/plugins/acf-events",
-    "wp-env:open": "open http://localhost:2233",
-    "wp-env:open:tests": "open http://localhost:22333",
-    "test": "pnpm test:pest && pnpm wp-env clean && pnpm wp-env start && pnpm test:e2e",
-    "test:pest": "pnpm run wp-env:cli:tests vendor/bin/pest --no-coverage",
-    "test:pest:ci": "pnpm run wp-env:cli:tests vendor/bin/pest --coverage-clover coverage.xml",
+    "wp-env-test": "wp-env --config .wp-env.test.json",
+    "wp-env:cli": "wp-env run cli --env-cwd=wp-content/plugins/acf-events",
+    "wp-env:open": "open $(wp-env status --json | jq -r '.urls.development')",
+    "wp-env-test:open": "open $(wp-env --config .wp-env.test.json status --json | jq -r '.urls.development')",
+    "test": "pnpm run test:pest && wp-env reset && wp-env start && pnpm run test:e2e",
+    "test:pest": "wp-env:cli:tests vendor/bin/pest --no-coverage",
+    "test:pest:ci": "wp-env:cli:tests vendor/bin/pest --coverage-clover coverage.xml",
     "test:e2e": "pnpm exec playwright test --config ./tests/E2E/playwright.config.ts",
     "test:e2e:dev": "PLAYWRIGHT_ENV=dev pnpm test:e2e --ui",
     "test:e2e:install": "pnpm exec playwright install --with-deps"
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
     "@playwright/test": "^1.57.0",
-    "@wordpress/env": "^10.34.0",
+    "@wordpress/env": "^11.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0"
   }

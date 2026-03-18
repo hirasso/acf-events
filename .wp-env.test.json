@@ -1,20 +1,17 @@
 {
   "$schema": "https://schemas.wp.org/trunk/wp-env.json",
   "phpVersion": "8.3",
+  "testsEnvironment": false,
   "core": "./vendor/.wp/core",
   "themes": ["./vendor/.wp/themes/twentytwentyfive"],
   "plugins": [
     "./vendor/.wp/plugins/advanced-custom-fields",
-    "./vendor/.wp/plugins/classic-editor",
     "./vendor/.wp/plugins/polylang",
-    "./tests/E2E",
     "."
   ],
-  "testsEnvironment": false,
+  "port": 22333,
   "config": {
-    "WP_ENV": "development"
-  },
-  "lifecycleScripts": {
-    "afterStart": "pnpm run wp-env:cli wp theme activate twentytwentyfive"
+    "WP_DEBUG": true,
+    "WP_ENV": "test"
   }
 }

@@ -23,11 +23,19 @@ function getCurrentEnv(): ?string
         ? WP_ENV
         : null;
 
-    return \in_array($env, ['development', 'tests'], true)
+    return \in_array($env, ['development', 'test'], true)
         ? $env
         : null;
 }
 
-if (getCurrentEnv() === 'tests') {
-    \add_action('after_setup_theme', fn() => new Setup());
-};
+add_action('after_setup_theme', function () {
+    $env = getCurrentEnv();
+
+    // /** prettydump */
+    // echo '<pre class="dump">';
+    // var_dump(compact('env'));
+    // echo '</pre>';
+    // exit;
+
+    new Setup();
+});

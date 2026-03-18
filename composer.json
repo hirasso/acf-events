@@ -26,6 +26,11 @@
       "src/helpers.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Hirasso\\ACFEvents\\Tests\\": "tests"
+    }
+  },
   "scripts": {
     "format": "vendor/bin/pint",
     "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
@@ -69,13 +74,14 @@
     "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.1",
     "roots/wordpress": "^6.9",
-    "wp-plugin/advanced-custom-fields": "^6.7",
+    "symfony/var-dumper": "^7.4",
     "szepeviktor/phpstan-wordpress": "^2.0",
     "vinkla/extended-acf": "^14.6",
-    "wp-plugin/classic-editor": "^1.6",
-    "wp-plugin/polylang": "^3.7",
     "wp-cli/wp-cli": "^2.12",
     "wp-phpunit/wp-phpunit": "^6.9",
+    "wp-plugin/advanced-custom-fields": "^6.7",
+    "wp-plugin/classic-editor": "^1.6",
+    "wp-plugin/polylang": "^3.7",
     "wp-theme/twentytwentyfive": "^1.4",
     "yoast/wp-test-utils": "^1.2"
   }
