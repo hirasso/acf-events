@@ -7,12 +7,11 @@
     "./vendor/.wp/plugins/advanced-custom-fields",
     "./vendor/.wp/plugins/classic-editor",
     "./vendor/.wp/plugins/polylang",
+    "./tests/E2E",
     "."
   ],
   "port": 2233,
-  "mappings": {
-    "wp-content/plugins/E2E": "./tests/E2E"
-  },
+  "mappings": {},
   "testsEnvironment": false,
   "config": {
     "ACFE_WP_ENV": "development"
