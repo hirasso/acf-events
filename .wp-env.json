@@ -6,24 +6,21 @@
   "plugins": [
     "./vendor/.wp/plugins/advanced-custom-fields",
     "./vendor/.wp/plugins/classic-editor",
-    "./vendor/.wp/plugins/sg-security",
+    "./vendor/.wp/plugins/polylang",
     "./tests/E2E"
   ],
   "env": {
     "development": {
       "port": 2233,
       "config": {
-        "RHAU_WP_ENV": "development"
+        "WP_ENV": "development"
       }
     },
     "tests": {
       "port": 22333,
       "config": {
         "WP_DEBUG": true,
-        "RHAU_WP_ENV": "tests"
-      },
-      "mappings": {
-        "wp-content/mu-plugins": "./packages/e2e-tests/mu-plugins"
+        "WP_ENV": "tests"
       }
     }
   },

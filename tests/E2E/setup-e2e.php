@@ -19,8 +19,8 @@ if (!\defined('ABSPATH')) {
  */
 function getCurrentEnv(): ?string
 {
-    $env = (\defined('RHAU_WP_ENV'))
-        ? RHAU_WP_ENV
+    $env = (\defined('WP_ENV'))
+        ? WP_ENV
         : null;
 
     return \in_array($env, ['development', 'tests'], true)
