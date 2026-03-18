@@ -65,11 +65,11 @@ jobs:
           php-version: 8.3
           playwright: true
 
-      - name: Start wp-env container
+      - name: Start wp-env-test container
         run: |
-          pnpm run wp-env start
-          pnpm run wp-env:cli php --version
-          pnpm run wp-env:cli wp core version
+          pnpm run wp-env-test start
+          pnpm run wp-env-test:cli php --version
+          pnpm run wp-env-test:cli wp core version
 
       - name: Run E2E Tests
         run: |
