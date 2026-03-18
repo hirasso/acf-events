@@ -11,7 +11,7 @@ $pluginsDir = \dirname(\dirname(\dirname(__DIR__)));
 /** Composer autoloader must be loaded before WP_PHPUNIT__DIR will be available */
 require_once "$pluginsDir/acf-events/vendor/autoload.php";
 
-/** Proviate access to the function `tests_add_filter()` */
+/** Provide access to the function `tests_add_filter()` */
 require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
 
 /** Manually load plugin files required for tests. */

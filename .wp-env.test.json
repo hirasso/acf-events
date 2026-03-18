@@ -2,6 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/wp-env.json",
   "phpVersion": "8.3",
   "testsEnvironment": false,
+  "port": 22333,
   "core": "./vendor/.wp/core",
   "themes": ["./vendor/.wp/themes/twentytwentyfive"],
   "plugins": [
@@ -9,7 +10,6 @@
     "./vendor/.wp/plugins/polylang",
     "."
   ],
-  "port": 22333,
   "config": {
     "WP_DEBUG": true,
     "ACFE_WP_ENV": "test"

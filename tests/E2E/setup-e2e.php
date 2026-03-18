@@ -12,7 +12,7 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-/** plugins are not immediately installed. We need to wait for them */
+/** plugins are not immediately activated. We need to wait for them */
 require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
 
 /**
