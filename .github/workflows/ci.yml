@@ -45,9 +45,9 @@ jobs:
       - name: Run PHPStan Tests
         run: composer analyse
 
-      - name: Run Pest Tests
+      - name: Run Integration Tests
         run: |
-          pnpm run test:pest:ci
+          pnpm run test:integration:ci
 
   e2eTests:
     name: E2E Tests

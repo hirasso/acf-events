@@ -1,6 +1,6 @@
 <?php
 
-namespace RH\AdminUtils\Tests\Pest;
+namespace RH\AdminUtils\Tests\Integration;
 
 /** The wordpress plugins directory, deducted from this bootstrap file */
 $pluginsDir = \dirname(\dirname(\dirname(__DIR__)));
