@@ -39,12 +39,8 @@ jobs:
           WP_ENV_CORE: 'WordPress/WordPress'
         run: |
           pnpm run wp-env-test start
-
-      - name: wp-env container debug information
-        shell: bash
-        run: |
-            pnpm run wp-env-test:cli php --version
-            pnpm run wp-env-test:cli wp core version
+          pnpm run wp-env-test:cli php --version
+          pnpm run wp-env-test:cli wp core version
 
       - name: Run PHPStan Tests
         run: composer analyse
@@ -75,12 +71,8 @@ jobs:
           WP_ENV_CORE: 'WordPress/WordPress'
         run: |
           pnpm run wp-env start
-
-      - name: wp-env container debug information
-        shell: bash
-        run: |
-            pnpm run wp-env:cli php --version
-            pnpm run wp-env:cli wp core version
+          pnpm run wp-env:cli php --version
+          pnpm run wp-env:cli wp core version
 
       - name: Run E2E Tests
         run: |
