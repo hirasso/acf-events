@@ -16,10 +16,8 @@ require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
 
 /** Manually load plugin files required for tests. */
 \tests_add_filter('muplugins_loaded', function () use ($pluginsDir) {
-    // require ACF, which is a dependency of ACFML
     require_once("$pluginsDir/advanced-custom-fields/acf.php");
-    // require the main plugin file
-    require_once("$pluginsDir/acf-events/acf-events.php");
+    require_once("$pluginsDir/polylang/polylang.php");
 });
 
 /** Start up the WP testing environment. */
