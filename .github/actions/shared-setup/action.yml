@@ -57,6 +57,12 @@ runs:
         pnpm run wp-env start
         pnpm run wp-env-test start
 
+    - name: wp-env container debug information
+      shell: bash
+      run: |
+          pnpm run wp-env-test run php --version
+          pnpm run wp-env-test run cli wp core version
+
     - name: Cache Playwright
       if: ${{ inputs.playwright == 'true' }}
       id: playwright-cache
