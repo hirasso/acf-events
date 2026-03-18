@@ -92,7 +92,7 @@ export default defineConfig({
 
   /* Configure projects for setup and major browsers */
   projects: [
-    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    { name: "setup", testMatch: "auth.setup.ts" },
     {
       name: "chromium",
       use: {
@@ -121,7 +121,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run wp-env-test start',
+    command: "pnpm run wp-env-test start",
     url: baseURL.href,
     timeout: 120_000,
     reuseExistingServer: true,
