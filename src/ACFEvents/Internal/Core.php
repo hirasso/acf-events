@@ -22,29 +22,35 @@ use WP_Term;
  */
 final class Core
 {
+    private static ?self $instance = null;
+
     public const ISO_DATE_FORMAT = 'Y-m-d H:i:s';
     public const FILTER_TAXONOMY = 'acfe-event_filter';
 
-    private static bool $registered = false;
-
     public function __construct(private Utils $utils) {}
 
-    public function register()
+    public static function init(Utils $utils)
     {
-        if (self::$registered) {
+        self::$instance ??= new self($utils);
+        return self::$instance;
+    }
+
+    public function addHooks(): self
+    {
+        if (has_action('init', [$this, 'init_hook'])) {
             return $this;
         }
-        self::$registered = true;
 
-        \add_action('init', [$this, 'init_hook']);
-        \add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
-        \add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
-        \add_filter('query_vars', [$this, 'query_vars']);
-        \add_filter('posts_clauses', [$this, 'posts_clauses'], 1000, 2);
-        \add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
-        \add_filter('term_link', [$this, 'term_link'], 10, 2);
-        \add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
-        \add_action('restrict_manage_posts', $this->renderYearFilter(...));
+        add_action('init', [$this, 'init_hook']);
+        add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
+        add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
+        add_filter('query_vars', [$this, 'query_vars']);
+        add_filter('posts_clauses', [$this, 'posts_clauses'], 1000, 2);
+        add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
+        add_filter('term_link', [$this, 'term_link'], 10, 2);
+        add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
+        add_action('restrict_manage_posts', $this->renderYearFilter(...));
+
         return $this;
     }
 

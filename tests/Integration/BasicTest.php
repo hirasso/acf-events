@@ -4,6 +4,7 @@ namespace Hirasso\ACFEvents\Tests\Integration;
 
 use Hirasso\ACFEvents\ACFEvents;
 use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
+use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
 use Hirasso\ACFEvents\Internal\PostTypes;
 use Yoast\WPTestUtils\WPIntegration\TestCase;
 
@@ -32,23 +33,48 @@ class BasicTest extends TestCase
             ],
         ]);
 
+        /**
+         * Augment $_POST to test recurrency creation
+         * The fact this needs to be hacked here points to a weakness in the
+         * implementation. We should maybe look into update_post_meta or so.
+         * OR we could add a new API function acf_events()->addRecurrence($eventId, $dateAndTime)...
+         * not sure about this.
+         */
+        $_POST = [
+            'acf' => [
+                Fields::key(EventFields::FURTHER_DATES) => [
+                    "row-0" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-09 19:00:00"],
+                    "row-1" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-12 18:00:00"],
+                    "row-2" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-12 19:00:00"],
+                ],
+            ],
+        ];
+
         $event = $this->factory()->post->create_and_get([
             'post_type' => PostTypes::EVENT,
             'meta_input' => [
                 EventFields::DATE_AND_TIME => \date('Y-m-d H:i:s', \strtotime('next saturday 10:00')),
                 EventFields::LOCATION_ID => $location->ID,
-                EventFields::FURTHER_DATES => [
-                    [EventFields::FURTHER_DATES_DATE_AND_TIME => \date('Y-m-d H:i:s', \strtotime('next saturday 12:00'))],
-                    [EventFields::FURTHER_DATES_DATE_AND_TIME => \date('Y-m-d H:i:s', \strtotime('next saturday 14:00'))],
-                ],
             ],
         ]);
 
         $recurrences = get_posts([
-            'post_type' => 'any',
+            'post_type' => PostTypes::RECURRENCE,
+            'post_status' => 'any',
             'posts_per_page' => -1,
         ]);
-        $this->assertTrue(true);
-        dump($recurrences);
+
+        $this->assertSame(count($recurrences), 3);
+
+        $furtherDates = collect($_POST['acf'][Fields::key(EventFields::FURTHER_DATES)])
+            ->map(fn($row) => $row[Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME)])
+            ->values()
+            ->all();
+
+        foreach ($recurrences as $index => $p) {
+            $this->assertSame($p->post_parent, $event->ID);
+            $dateAndTime = get_post_meta($p->ID, EventFields::DATE_AND_TIME, true);
+            $this->assertSame($dateAndTime, $furtherDates[$index]);
+        }
     }
 }

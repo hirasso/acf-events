@@ -27,12 +27,15 @@ final readonly class ACFEvents
 
     public function __construct()
     {
-        $core = (new Core(new Utils()))->register();
+        $utils = Utils::init();
+        $core = Core::init($utils)->addHooks();
+
+        Locations::init($core)->addHooks();
+        Recurrences::init($core)->addHooks();
+        PolylangIntegration::init()->addHooks();
+
         (new EventFields($core))->register();
         (new LocationFields($core))->register();
-        (new Locations($core))->register();
-        (new Recurrences($core))->register();
-        (new PolylangIntegration())->register();
 
         $this->core = $core;
     }

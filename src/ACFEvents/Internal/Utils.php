@@ -14,6 +14,16 @@ use wpdb;
 
 final class Utils
 {
+    private static ?self $instance = null;
+
+    private function __construct() {}
+
+    public static function init()
+    {
+        self::$instance ??= new self();
+        return self::$instance;
+    }
+
     /**
      * Access the global wpdb instance
      */
@@ -30,7 +40,7 @@ final class Utils
      * @param null|list<string> $postStati pass `null` explicitly to ignore the post status
      * @return list<int>
      */
-    public function getYears(string|array $postTypes, null|array $postStati = ['publish']): array
+    public function getYears(string|array $postTypes, ?array $postStati = ['publish']): array
     {
         $wpdb = $this->wpdb();
 

@@ -16,37 +16,53 @@ use WP_Term;
  */
 final class PolylangIntegration
 {
-    protected static bool $registered = false;
+    private static ?self $instance = null;
 
-    public function __construct() {}
-
-    public function register()
+    private function __construct()
     {
-        if (self::$registered) {
-            return;
-        }
-        self::$registered = true;
+        $this->registerStrings();
+    }
 
+    public static function init()
+    {
+        self::$instance ??= new self();
+        return self::$instance;
+    }
+
+    public function addHooks(): self
+    {
+        if (has_filter('term_link', [$this, 'event_filter_term_link'], 11)) {
+            return $this;
+        }
+        if (!$this->isPolylangActive()) {
+            return $this;
+        }
+
+        add_filter('term_link', [$this, 'event_filter_term_link'], 11, 2);
+        add_filter('gettext', [$this, 'translate_gettext'], 10, 3);
+
+        return $this;
+    }
+
+    private function registerStrings(): void
+    {
         if (!$this->isPolylangActive()) {
             return;
         }
 
-        \pll_register_string('acf-events', 'Minutes');
-        \pll_register_string('acf-events', 'Program');
-        \pll_register_string('acf-events', 'A-Z');
-        \pll_register_string('acf-events', 'Calendar');
-        \pll_register_string('acf-events', 'Places');
-        \pll_register_string('acf-events', 'Yesterday');
-        \pll_register_string('acf-events', 'Today');
-        \pll_register_string('acf-events', 'Tomorrow');
-        \pll_register_string('acf-events', 'Open in Maps');
-        \pll_register_string('acf-events', 'Tickets');
-        \pll_register_string('acf-events', 'Location');
-        \pll_register_string('acf-events', 'Cast');
-        \pll_register_string('acf-events', 'Production');
-
-        \add_filter('term_link', [$this, 'event_filter_term_link'], 11, 2);
-        \add_filter('gettext', [$this, 'translate_gettext'], 10, 3);
+        pll_register_string('acf-events', 'Minutes');
+        pll_register_string('acf-events', 'Program');
+        pll_register_string('acf-events', 'A-Z');
+        pll_register_string('acf-events', 'Calendar');
+        pll_register_string('acf-events', 'Places');
+        pll_register_string('acf-events', 'Yesterday');
+        pll_register_string('acf-events', 'Today');
+        pll_register_string('acf-events', 'Tomorrow');
+        pll_register_string('acf-events', 'Open in Maps');
+        pll_register_string('acf-events', 'Tickets');
+        pll_register_string('acf-events', 'Location');
+        pll_register_string('acf-events', 'Cast');
+        pll_register_string('acf-events', 'Production');
     }
 
     /**
