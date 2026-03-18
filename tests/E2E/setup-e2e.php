@@ -19,8 +19,8 @@ if (!\defined('ABSPATH')) {
  */
 function getCurrentEnv(): ?string
 {
-    $env = (\defined('WP_ENV'))
-        ? WP_ENV
+    $env = (\defined('ACFE_WP_ENV'))
+        ? ACFE_WP_ENV
         : null;
 
     return \in_array($env, ['development', 'test'], true)

@@ -12,7 +12,7 @@
   ],
   "testsEnvironment": false,
   "config": {
-    "WP_ENV": "development"
+    "ACFE_WP_ENV": "development"
   },
   "lifecycleScripts": {
     "afterStart": "pnpm run wp-env:cli wp theme activate twentytwentyfive"

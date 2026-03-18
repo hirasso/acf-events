@@ -12,6 +12,6 @@
   "port": 22333,
   "config": {
     "WP_DEBUG": true,
-    "WP_ENV": "test"
+    "ACFE_WP_ENV": "test"
   }
 }
