@@ -36,7 +36,7 @@ jobs:
       - name: Start wp-env-test container
         env:
           WP_ENV_PHP_VERSION: ${{ matrix.php }}
-          WP_ENV_CORE: 'WordPress/WordPress'
+          # WP_ENV_CORE: 'WordPress/WordPress'
         run: |
           pnpm run wp-env-test start
           pnpm run wp-env-test:cli php --version
