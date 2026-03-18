@@ -19,25 +19,32 @@ use WP_Post;
  */
 final class Locations
 {
-    protected static bool $registered = false;
+    private static ?self $instance = null;
 
-    public function __construct(private Core $core) {}
+    private function __construct(private Core $core) {}
+
+    public static function init(Core $core)
+    {
+        self::$instance ??= new self($core);
+        return self::$instance;
+    }
 
     /**
      * Add WordPress hooks
      */
-    public function register()
+    public function addHooks(): self
     {
-        if (self::$registered) {
-            return;
+        if (has_action('init', [$this, 'add_post_type'])) {
+            return $this;
         }
-        self::$registered = true;
 
-        \add_action('init', [$this, 'add_post_type']);
-        \add_filter('update_post_meta', [$this, 'update_post_meta_hook'], 10, 4);
-        \add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
-        \add_filter('map_meta_cap', [$this, 'prevent_location_deletion'], 10, 4);
-        \add_filter('acf/pre_update_value', [$this, 'acf_pre_update_value'], 10, 4);
+        add_action('init', [$this, 'add_post_type']);
+        add_filter('update_post_meta', [$this, 'update_post_meta_hook'], 10, 4);
+        add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
+        add_filter('map_meta_cap', [$this, 'prevent_location_deletion'], 10, 4);
+        add_filter('acf/pre_update_value', [$this, 'acf_pre_update_value'], 10, 4);
+
+        return $this;
     }
 
 

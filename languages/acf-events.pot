@@ -12,36 +12,36 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: acf-events\n"
 
-#: src/AcfEvents/Internal/Core.php:604
+#: src/ACFEvents/Internal/Core.php:610
 msgid "Minutes"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:649
+#: src/ACFEvents/Internal/Core.php:655
 msgid "Today"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:650
+#: src/ACFEvents/Internal/Core.php:656
 msgid "Yesterday"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:651
+#: src/ACFEvents/Internal/Core.php:657
 msgid "Tomorrow"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:841
-#: src/AcfEvents/Internal/Core.php:845
+#: src/ACFEvents/Internal/Core.php:847
+#: src/ACFEvents/Internal/Core.php:851
 msgid "Location"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:842
+#: src/ACFEvents/Internal/Core.php:848
 msgid "Dates"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:846
+#: src/ACFEvents/Internal/Core.php:852
 msgid "Date"
 msgstr ""
 
-#: src/AcfEvents/Internal/Core.php:922
+#: src/ACFEvents/Internal/Core.php:928
 #, php-format
 msgid "Year %s"
 msgstr ""

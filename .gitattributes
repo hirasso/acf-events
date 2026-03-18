@@ -2,8 +2,13 @@
 .* export-ignore
 
 # Tooling
+package.json export-ignore
+pnpm-lock.yaml export-ignore
 pint.json export-ignore
 phpstan.neon export-ignore
+phpunit.xml.dist export-ignore
+/tests export-ignore
+/tools export-ignore
 
 # composer
 composer.lock export-ignore

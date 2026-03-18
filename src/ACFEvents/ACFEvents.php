@@ -21,20 +21,26 @@ use WP_Post;
 /**
  * Manage events, recurrences and locations using Advanced Custom Fields
  */
-final readonly class ACFEvents
+final class ACFEvents
 {
     public Core $core;
 
-    public function __construct()
-    {
-        $core = (new Core(new Utils()))->register();
-        (new EventFields($core))->register();
-        (new LocationFields($core))->register();
-        (new Locations($core))->register();
-        (new Recurrences($core))->register();
-        (new PolylangIntegration())->register();
+    private static ?self $instance = null;
 
-        $this->core = $core;
+    public static function init()
+    {
+        self::$instance ??= new self();
+
+        $utils = Utils::init();
+        $core = Core::init($utils)->addHooks();
+        Locations::init($core)->addHooks();
+        Recurrences::init($core)->addHooks();
+        EventFields::init($core)->addHooks();
+        LocationFields::init($core)->addHooks();
+        PolylangIntegration::init()->addHooks();
+        self::$instance->core = $core;
+
+        return self::$instance;
     }
 
     /**
@@ -46,12 +52,12 @@ final readonly class ACFEvents
             return null;
         }
 
-        $rawDate = \get_field(EventFields::DATE_AND_TIME, $post, false);
+        $rawDate = get_field(EventFields::DATE_AND_TIME, $post, false);
 
-        $date = \date_i18n(\get_option('date_format'), \strtotime($rawDate));
-        $time = \date_i18n(\get_option('time_format'), \strtotime($rawDate));
+        $date = date_i18n(get_option('date_format'), \strtotime($rawDate));
+        $time = date_i18n(get_option('time_format'), \strtotime($rawDate));
 
-        return \collect([$date, $time])->filter()->join($separator);
+        return collect([$date, $time])->filter()->join($separator);
     }
 
     /**
@@ -59,11 +65,11 @@ final readonly class ACFEvents
      */
     public function getLocationNameAndArea(int $eventID): string
     {
-        $locationID = \get_field(EventFields::LOCATION_ID, $eventID);
+        $locationID = get_field(EventFields::LOCATION_ID, $eventID);
 
-        return \collect([
-            \get_the_title($locationID),
-            \get_field(LocationFields::AREA, $locationID) ?: '',
+        return collect([
+            get_the_title($locationID),
+            get_field(LocationFields::AREA, $locationID) ?: '',
         ])
         ->filter($this->core->isFilledString(...))
         ->join(', ');
