@@ -4,13 +4,15 @@
   "core": "./vendor/.wp/core",
   "themes": ["./vendor/.wp/themes/twentytwentyfive"],
   "plugins": [
-    ".",
     "./vendor/.wp/plugins/advanced-custom-fields",
     "./vendor/.wp/plugins/classic-editor",
     "./vendor/.wp/plugins/polylang",
     "./tests/E2E"
   ],
   "port": 2233,
+  "mappings": {
+    "wp-content/plugins/acf-events": "."
+  },
   "testsEnvironment": false,
   "config": {
     "ACFE_WP_ENV": "development"
