@@ -12,7 +12,33 @@ class BasicTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->setupPolylangLanguages();
         acf_events();
+    }
+
+    private function setupPolylangLanguages(): void
+    {
+        require_once WP_PLUGIN_DIR . '/polylang/src/api.php';
+
+        if (!empty(pll_languages_list())) {
+            return;
+        }
+
+        PLL()->model->add_language([
+            'name'       => 'English',
+            'slug'       => 'en',
+            'locale'     => 'en_US',
+            'rtl'        => false,
+            'term_group' => 0,
+        ]);
+
+        PLL()->model->add_language([
+            'name'       => 'Deutsch',
+            'slug'       => 'de',
+            'locale'     => 'de_DE',
+            'rtl'        => false,
+            'term_group' => 1,
+        ]);
     }
 
     public function test_has_required_plugins(): void
@@ -51,6 +77,7 @@ class BasicTest extends TestCase
 
         $event = $this->factory()->post->create_and_get([
             'post_type' => PostTypes::EVENT,
+            'tax_input' => ['language' => 'en'], // no effect currently
             'meta_input' => [
                 EventFields::DATE_AND_TIME => \date('Y-m-d H:i:s', \strtotime('next saturday 10:00')),
                 EventFields::LOCATION_ID => $location->ID,
