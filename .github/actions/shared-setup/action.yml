@@ -54,6 +54,7 @@ runs:
       run: |
         echo '{"core": null, "phpVersion": "${{ inputs.php-version }}"}' > .wp-env.override.json
         pnpm run wp-env start
+        pnpm run wp-env-test start
 
     - name: Cache Playwright
       if: ${{ inputs.playwright == 'true' }}

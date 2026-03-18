@@ -37,7 +37,8 @@ jobs:
         run: composer analyse
 
       - name: Run Pest Tests
-        run: pnpm run test:pest:ci
+        run: |
+          pnpm run test:pest:ci
 
   e2eTests:
     name: E2E Tests
