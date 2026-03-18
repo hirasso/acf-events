@@ -27,10 +27,12 @@ final class Core
 
     private static bool $registered = false;
 
+    public function __construct(private Utils $utils) {}
+
     public function register()
     {
         if (self::$registered) {
-            return;
+            return $this;
         }
         self::$registered = true;
 
@@ -42,6 +44,8 @@ final class Core
         \add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
         \add_filter('term_link', [$this, 'term_link'], 10, 2);
         \add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
+        \add_action('restrict_manage_posts', $this->renderYearFilter(...));
+        return $this;
     }
 
     public function init_hook()
@@ -314,17 +318,21 @@ final class Core
      */
     public function prepare_archive_main_query(WP_Query $query): void
     {
-        if (\is_admin() || !$query->is_main_query() || !$query->is_archive()) {
+        if (!$query->is_main_query() || !$query->is_archive()) {
             return;
         }
 
-        $postType = $this->guessPostType($query);
-
-        if ($postType !== PostTypes::EVENT) {
+        if ($this->guessPostType($query) !== PostTypes::EVENT) {
             return;
         }
 
-        $query->query_vars = \collect($query->query_vars)->replaceRecursive($this->getArchiveArgs($query))->all();
+        $query->set('year', get_query_var('year') ?: current_time('Y'));
+
+        if (!\is_admin()) {
+            $query->query_vars = \collect($query->query_vars)
+                ->replaceRecursive($this->getArchiveArgs($query))
+                ->all();
+        }
     }
 
     /**
@@ -332,8 +340,7 @@ final class Core
      */
     private function getArchiveArgs(WP_Query $query)
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+        $wpdb = $this->utils->wpdb();
 
         $groupby = \get_query_var('by', null);
 
@@ -884,5 +891,41 @@ final class Core
                 echo \date_i18n($format, \strtotime($dateString));
                 break;
         }
+    }
+
+    /**
+     * Render a filter for the years
+     */
+    private function renderYearFilter(string $postType): void
+    {
+        if ($postType !== PostTypes::EVENT) {
+            return;
+        }
+
+        $years = $this->utils->getYears($postType, null);
+        if (empty($years)) {
+            return;
+        }
+
+        $selectedYear = (int) get_query_var('year');
+
+        ob_start(); ?>
+        <select name="year">
+
+            <?php foreach ($years as $year) : ?>
+                <option <?= attr([
+                    'selected' => $year === $selectedYear,
+                    'value' => $year,
+                ]) ?>>
+                    <?php
+                        echo $year === $selectedYear
+                        ? sprintf(__('Year %s', 'acf-events'), $year)
+                        : $year;
+                ?>
+                </option>
+            <?php endforeach; ?>
+
+        </select>
+        <?php echo ob_get_clean();
     }
 }

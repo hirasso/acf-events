@@ -1,0 +1,73 @@
+name: Version or Publish
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  packageInfos:
+    name: Get Package Infos
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    outputs:
+      fullName: ${{ steps.packageInfos.outputs.fullName }}
+      vendorName: ${{ steps.packageInfos.outputs.vendorName }}
+      packageName: ${{ steps.packageInfos.outputs.packageName }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Read and Write Package Infos to Output
+        id: packageInfos
+        run: |
+          NAME=$(jq -r '.name' composer.json)
+          echo "fullName=${NAME}" >> $GITHUB_OUTPUT
+          echo "vendorName=${NAME%%/*}" >> $GITHUB_OUTPUT
+          echo "packageName=${NAME#*/}" >> $GITHUB_OUTPUT
+          cat "$GITHUB_OUTPUT"
+
+  release:
+    needs: packageInfos
+    if: ${{ github.repository == needs.packageInfos.outputs.fullName }}
+
+    name: Create Version PR or Publish
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "bot@rassohilber.com"
+          git config --global user.name "Rasso Hilber's Bot"
+
+      - name: Run Shared Setup
+        uses: ./.github/actions/shared-setup
+        with:
+          php: false
+          wp-env: false
+
+      # Run changesets action either if there are unreleased changesets (= a PR must be created)
+      # or if the commit message matches the release PR (= new versions must be published to NPM)
+      - name: Create changesets PR or Publish
+        id: cs
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
+        with:
+          title: "[CI] Release"
+          commit: "[CI] Release"
+          version: pnpm run version
+          publish: pnpm changeset tag
+        env:
+          # do not run the pre-commit hook
+          HUSKY: 0
+          # doesn't work with GITHUB_TOKEN for some reason
+          GITHUB_TOKEN: ${{ secrets.HIRASSO_ACTIONS_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "name": "hirasso/acf-events",
-  "description": "A Composer library to manage events, recurrences and locations using WordPress+Advanced Custom Fields 📆",
+  "description": "A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -11,6 +11,7 @@
   ],
   "require": {
     "php": ">=8.2",
+    "hirasso/attr": "^4.4",
     "illuminate/collections": "^11 || ^12"
   },
   "minimum-stability": "dev",
@@ -25,6 +26,11 @@
       "src/helpers.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Hirasso\\ACFEvents\\Tests\\": "tests"
+    }
+  },
   "scripts": {
     "format": "vendor/bin/pint",
     "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
@@ -35,6 +41,7 @@
     "sort-packages": true,
     "allow-plugins": {
       "composer/installers": true,
+      "pestphp/pest-plugin": true,
       "phpstan/extension-installer": true,
       "roots/wordpress-core-installer": true
     }
@@ -54,22 +61,30 @@
     "wordpress-install-dir": "vendor/.wp/core"
   },
   "repositories": {
-    "wpackagist": {
+    "wp-composer": {
       "type": "composer",
-      "url": "https://wpackagist.org",
+      "url": "https://repo.wp-composer.com",
       "only": [
-        "wpackagist-plugin/*",
-        "wpackagist-theme/*"
+        "wp-plugin/*",
+        "wp-theme/*"
       ]
     }
   },
   "require-dev": {
     "laravel/pint": "^1.27",
+    "pestphp/pest": "^1.23",
     "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.1",
     "roots/wordpress": "^6.9",
-    "wpackagist-plugin/advanced-custom-fields": "^6.7",
-    "wpackagist-plugin/classic-editor": "^1.6",
-    "wpackagist-plugin/polylang": "^3.7"
+    "symfony/var-dumper": "^7.4",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "vinkla/extended-acf": "^14.6",
+    "wp-cli/wp-cli": "^2.12",
+    "wp-phpunit/wp-phpunit": "^6.9",
+    "wp-plugin/advanced-custom-fields": "^6.7",
+    "wp-plugin/classic-editor": "^1.6",
+    "wp-plugin/polylang": "^3.7",
+    "wp-theme/twentytwentyfive": "^1.4",
+    "yoast/wp-test-utils": "^1.2"
   }
 }

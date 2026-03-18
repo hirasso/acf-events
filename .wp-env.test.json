@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "phpVersion": "8.3",
+  "testsEnvironment": false,
+  "port": 22333,
+  "core": "./vendor/.wp/core",
+  "themes": ["./vendor/.wp/themes/twentytwentyfive"],
+  "plugins": [
+    "./vendor/.wp/plugins/advanced-custom-fields",
+    "./vendor/.wp/plugins/polylang"
+  ],
+  "mappings": {
+    "wp-content/plugins/acf-events": "."
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "ACFE_WP_ENV": "test"
+  }
+}
