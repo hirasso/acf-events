@@ -45,9 +45,6 @@ jobs:
       - name: Run PHPStan Tests
         run: composer analyse
 
-      - name: Create uploads directory
-        run: pnpm wp-env-test run cli "mkdir -p /var/www/html/wp-content/uploads"
-
       - name: Run Integration Tests
         run: |
           pnpm run test:integration:ci
