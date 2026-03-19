@@ -47,7 +47,7 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          pnpm run test:integration:ci
+          pnpm run test:integration
 
   e2eTests:
     name: E2E Tests
