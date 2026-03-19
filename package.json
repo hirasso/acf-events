@@ -14,7 +14,6 @@
     "wp-env-test:cli": "pnpm wp-env-test run cli --env-cwd=wp-content/plugins/acf-events",
     "wp-env:launch": "open $(wp-env status --json | jq -r '.urls.development')",
     "wp-env-test:launch": "open $(wp-env --config .wp-env.test.json status --json | jq -r '.urls.development')",
-    "test": "pnpm run test:integration && wp-env reset && wp-env start && pnpm run test:e2e",
     "test:integration": "pnpm run wp-env-test:cli vendor/bin/pest --no-coverage",
     "test:integration:ci": "pnpm run wp-env-test:cli vendor/bin/pest --coverage-clover coverage.xml",
     "test:e2e": "pnpm exec playwright test --config ./tests/E2E/playwright.config.ts",
