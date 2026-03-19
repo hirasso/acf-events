@@ -12,7 +12,7 @@ class BasicTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->setupPolylangLanguages();
+        // $this->setupPolylangLanguages();
         acf_events();
     }
 

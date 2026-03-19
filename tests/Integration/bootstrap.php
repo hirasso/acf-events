@@ -18,7 +18,7 @@ require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
 \tests_add_filter('muplugins_loaded', function () use ($pluginsDir) {
     require_once("$pluginsDir/advanced-custom-fields/acf.php");
     require_once("$pluginsDir/polylang/polylang.php");
-    define('PLL_ADMIN', true);
+    // define('PLL_ADMIN', true);
 });
 
 /**
@@ -28,10 +28,10 @@ require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
  * `clean_object_term_cache` won't clear `language_relationships` cache for
  * our post types, making pll_set_post_language / pll_get_post_language broken.
  */
-\tests_add_filter('pll_get_post_types', function (array $post_types): array {
-    $ours = ['acfe-event', 'acfe-recurrence', 'acfe-location'];
-    return array_merge($post_types, array_combine($ours, $ours));
-});
+// \tests_add_filter('pll_get_post_types', function (array $post_types): array {
+//     $ours = ['acfe-event', 'acfe-recurrence', 'acfe-location'];
+//     return array_merge($post_types, array_combine($ours, $ours));
+// });
 
 /** Start up the WP testing environment. */
 require_once \getenv('WP_PHPUNIT__DIR') . '/includes/bootstrap.php';
