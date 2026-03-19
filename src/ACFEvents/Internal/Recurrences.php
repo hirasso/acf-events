@@ -113,21 +113,36 @@ final class Recurrences
             return;
         }
 
+        $postTranslations = pll_get_post_translations($postID);
+
+        if (empty($postTranslations)) {
+            return;
+        }
+
         /** @var array<int, array<string, int>> $linked */
         $linked = collect($recurrences)
-            ->map(fn($postID) => [$currentLang => $postID])
+            ->map(fn($recurrenceID) => [$currentLang => $recurrenceID])
             ->all();
 
-        collect(pll_get_post_translations($postID))
+        collect($postTranslations)
             ->reject($postID)
             ->each(function ($translationID, $lang) use (&$linked) {
 
-                foreach ($this->createRecurrences($translationID) as $index => $postID) {
-                    $linked[$index][$lang] = $postID;
+                foreach ($this->createRecurrences($translationID) as $index => $recurrenceID) {
+                    $linked[$index][$lang] = $recurrenceID;
                 }
 
             });
 
+        /**
+         * We have an array with this shape now:
+         * [
+         *   ['de' => 123, 'fr' => 456],
+         *   ['de' => 3298, 'fr' => 1234],
+         *   ['de' => 4125, 'fr' => 4523],
+         *   ....
+         * ]
+         */
         foreach ($linked as $languagesAndIds) {
             pll_save_post_translations($languagesAndIds);
         }
