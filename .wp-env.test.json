@@ -11,7 +11,8 @@
     "./tests/E2E"
   ],
   "mappings": {
-    "wp-content/plugins/acf-events": "."
+    "wp-content/plugins/acf-events": ".",
+    "wp-content/uploads": "./tests/uploads"
   },
   "config": {
     "WP_DEBUG": true,

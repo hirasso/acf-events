@@ -35,7 +35,3 @@ require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
 
 /** Start up the WP testing environment. */
 require_once \getenv('WP_PHPUNIT__DIR') . '/includes/bootstrap.php';
-
-/** Ensure the uploads directory exists (may be absent in fresh CI containers) */
-$createdUploadDir = wp_mkdir_p(wp_upload_dir()['basedir']);
-dump(compact('createdUploadDir'));
