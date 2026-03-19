@@ -230,7 +230,7 @@ final class Core
         $postType = $includeRecurrences ? [PostTypes::EVENT, PostTypes::RECURRENCE] : PostTypes::EVENT;
 
         $args = [
-            // 'lang' => pll_get_post_language($postID),
+            'lang' => '',
             'suppress_filters' => true,
             'post_type' => $postType,
             'posts_per_page' => $amount,
