@@ -127,11 +127,9 @@ final class Recurrences
         collect($postTranslations)
             ->reject($postID)
             ->each(function ($translationID, $lang) use (&$linked) {
-
                 foreach ($this->createRecurrences($translationID) as $index => $recurrenceID) {
                     $linked[$index][$lang] = $recurrenceID;
                 }
-
             });
 
         /**
