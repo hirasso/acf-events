@@ -90,14 +90,28 @@ final class Recurrences
             return;
         }
 
-        $this->createRecurrences($postID);
+        $recurrences = $this->createRecurrences($postID);
 
         if (function_exists('pll_get_post_translations')) {
+            $currentLang = pll_get_post_language($postID);
+            /** @var array<int, array<string, int>> $recurrences */
+            $recurrences = collect($recurrences)
+                ->map(fn($postID) => [$currentLang => $postID])
+                ->all();
 
             collect(pll_get_post_translations($postID))
                 ->reject($postID)
-                ->each(fn($translationID) => $this->createRecurrences($translationID));
+                ->each(function ($translationID, $lang) use (&$recurrences) {
 
+                    foreach ($this->createRecurrences($translationID) as $index => $postID) {
+                        $recurrences[$index][$lang] = $postID;
+                    }
+
+                });
+
+            foreach ($recurrences as $languagesAndIds) {
+                pll_save_post_translations($languagesAndIds);
+            }
         }
     }
 
@@ -140,19 +154,20 @@ final class Recurrences
 
     /**
      * Create clones from an original event
+     * @return list<int>
      */
-    private function createRecurrences($postID): void
+    private function createRecurrences($postID): array
     {
         /** Double-check if this is an original event */
         if (!$this->core->isOriginalEvent($postID)) {
-            return;
+            return [];
         }
 
         $this->deleteRecurrences($postID);
 
         /** Only create clones for published events */
         if (!$this->core->isVisiblePostStatus($postID)) {
-            return;
+            return [];
         }
 
         /**
@@ -168,20 +183,21 @@ final class Recurrences
         /**
          * Create a recurrence for each furtherDates entry
          */
-        collect($rawFurtherDates)
+        return collect($rawFurtherDates)
             ->pluck($this->subFieldKey)
             ->filter()
             ->map(fn($date) => $this->core->getIsoDateTime($date))
-            ->each(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime));
+            ->map(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime))
+            ->all();
     }
 
     /**
      * Create an event recurrence entry
      */
-    private function createRecurrence(int $postID, string $dateTime): void
+    private function createRecurrence(int $postID, string $dateTime): int
     {
         if (!$this->core->isOriginalEvent($postID)) {
-            return;
+            throw new RuntimeException(sprintf(__('Not an event: %d'), $postID));
         }
 
         if (!$this->core->isValidDateFormat($dateTime)) {
@@ -226,6 +242,8 @@ final class Recurrences
         if (is_wp_error($result)) {
             throw new RuntimeException($result->get_error_message());
         }
+
+        return $result;
     }
 
     /**
