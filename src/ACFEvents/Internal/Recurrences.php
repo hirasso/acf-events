@@ -209,7 +209,7 @@ final class Recurrences
          * is not available (e.g. during any edit actions from the edit.php screen)
          */
         $rawFurtherDates = $_POST['acf'][$this->fieldKey]
-            ?? \get_field($this->fieldKey, $postID, false);
+            ?? get_field($this->fieldKey, $postID, false);
 
         /**
          * Create a recurrence for each furtherDates entry
@@ -236,7 +236,7 @@ final class Recurrences
         }
 
         $originalMeta = $this->core->getFlatPostMeta($postID);
-        $originalPostArray = \get_post($postID, ARRAY_A);
+        $originalPostArray = get_post($postID, ARRAY_A);
 
         $taxInput = collect(get_post_taxonomies($postID))
             ->reject('post_translations')
@@ -247,7 +247,7 @@ final class Recurrences
             ])
             ->all();
 
-        $postName = $originalPostArray['post_name'] . '-' . \md5($dateTime);
+        $postName = $originalPostArray['post_name'] . '-' . md5($dateTime);
 
         $postarr = collect($originalPostArray)
             ->only([

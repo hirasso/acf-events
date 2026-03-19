@@ -35,11 +35,11 @@ final readonly class EventDate
     {
         $urlID = $_GET['recurrence'] ?? null;
 
-        if (\is_numeric($urlID)) {
-            return \intval($urlID) === $this->postID;
+        if (is_numeric($urlID)) {
+            return intval($urlID) === $this->postID;
         }
 
-        return $this->postID === \get_queried_object_id();
+        return $this->postID === get_queried_object_id();
     }
 
     public function toW3C(): string
@@ -49,13 +49,13 @@ final readonly class EventDate
 
     public function toFormattedString()
     {
-        $format = \collect([
-            \get_option('date_format', ''),
-            \get_option('time_format', ''),
+        $format = collect([
+            get_option('date_format', ''),
+            get_option('time_format', ''),
         ])
-            ->filter(fn($format) => !empty(\trim($format)))
+            ->filter(fn($format) => !empty(trim($format)))
             ->join(', ');
 
-        return \date_i18n($format, $this->date->getTimestamp());
+        return date_i18n($format, $this->date->getTimestamp());
     }
 }

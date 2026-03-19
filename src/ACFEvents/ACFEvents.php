@@ -54,8 +54,8 @@ final class ACFEvents
 
         $rawDate = get_field(EventFields::DATE_AND_TIME, $post, false);
 
-        $date = date_i18n(get_option('date_format'), \strtotime($rawDate));
-        $time = date_i18n(get_option('time_format'), \strtotime($rawDate));
+        $date = date_i18n(get_option('date_format'), strtotime($rawDate));
+        $time = date_i18n(get_option('time_format'), strtotime($rawDate));
 
         return collect([$date, $time])->filter()->join($separator);
     }

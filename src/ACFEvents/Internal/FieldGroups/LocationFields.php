@@ -30,7 +30,7 @@ final class LocationFields extends Fields
 
     protected function addFields()
     {
-        \add_filter('acf/prepare_field/key=' . self::key(self::DEBUG_ATTACHED_EVENTS), $this->prepare_field_debug_attached_events(...));
+        add_filter('acf/prepare_field/key=' . self::key(self::DEBUG_ATTACHED_EVENTS), $this->prepare_field_debug_attached_events(...));
 
         $fields = [
             [
@@ -100,9 +100,9 @@ final class LocationFields extends Fields
             ],
         ];
 
-        $fields = \apply_filters('acfe:location:fields', $fields);
+        $fields = apply_filters('acfe:location:fields', $fields);
 
-        \acf_add_local_field_group([
+        acf_add_local_field_group([
             'key' => self::GROUP_KEY,
             'title' => self::GROUP_TITLE,
             'fields' => $fields,
@@ -137,7 +137,7 @@ final class LocationFields extends Fields
 
         /** @var WP_Post[] $attachedEvents */
         $attachedEvents = $this->core->getEventsAtLocation(
-            \get_post(),
+            get_post(),
             amount: -1,
             ids: false,
             includeRecurrences: false,
@@ -147,20 +147,20 @@ final class LocationFields extends Fields
             return $field;
         }
 
-        \ob_start() ?>
+        ob_start() ?>
         <table class="wp-list-table widefat striped">
             <?php foreach ($attachedEvents as $p) { ?>
                 <tr>
-                    <td><?= \get_the_title($p) ?></td>
-                    <td><a target="_blank" href="<?= \get_permalink($p) ?>">view</a></td>
-                    <td><a href="<?= \get_edit_post_link($p->ID) ?>">edit</a></td>
+                    <td><?= get_the_title($p) ?></td>
+                    <td><a target="_blank" href="<?= get_permalink($p) ?>">view</a></td>
+                    <td><a href="<?= get_edit_post_link($p->ID) ?>">edit</a></td>
                 </tr>
             <?php } ?>
         </table>
 
         <?php
-        $field['message'] = \ob_get_clean();
-        $field['label'] .= ' (' . \count($attachedEvents) . ')';
+        $field['message'] = ob_get_clean();
+        $field['label'] .= ' (' . count($attachedEvents) . ')';
 
         return $field;
     }

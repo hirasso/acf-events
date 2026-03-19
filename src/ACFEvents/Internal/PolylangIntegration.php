@@ -70,7 +70,7 @@ final class PolylangIntegration
      */
     protected function isPolylangActive(): bool
     {
-        return \function_exists('PLL');
+        return function_exists('PLL');
     }
 
     /**
@@ -94,12 +94,12 @@ final class PolylangIntegration
             return $link;
         }
 
-        if (!\str_starts_with($link, \get_post_type_archive_link(PostTypes::EVENT))) {
+        if (!str_starts_with($link, get_post_type_archive_link(PostTypes::EVENT))) {
             return $link;
         }
 
         $postType = PostTypes::EVENT;
-        $termLanguage = \pll_get_term_language($term->term_id, \OBJECT);
+        $termLanguage = pll_get_term_language($term->term_id, \OBJECT);
 
         /** The term has no language: nothing to do. */
         if (!$termLanguage) {
@@ -126,7 +126,7 @@ final class PolylangIntegration
     public function translate_gettext(string $translated, string $original, string $domain): string
     {
         if ($domain === 'acf-events' && $translated === $original) {
-            return \pll__($original);
+            return pll__($original);
         }
         return $translated;
     }

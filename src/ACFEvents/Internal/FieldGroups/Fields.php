@@ -28,10 +28,10 @@ abstract class Fields
 
     final public function addHooks(): static
     {
-        if (\has_action('acf/include_fields', [$this, 'acf_include_fields'])) {
+        if (has_action('acf/include_fields', [$this, 'acf_include_fields'])) {
             return $this;
         }
-        \add_action('acf/include_fields', [$this, 'acf_include_fields']);
+        add_action('acf/include_fields', [$this, 'acf_include_fields']);
         return $this;
     }
 
@@ -40,7 +40,7 @@ abstract class Fields
      */
     final public function acf_include_fields()
     {
-        if (! \function_exists('acf_add_local_field_group')) {
+        if (! function_exists('acf_add_local_field_group')) {
             throw new Exception("'acf_add_local_field_group()' is not defined");
         }
 

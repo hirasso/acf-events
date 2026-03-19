@@ -80,7 +80,7 @@ final class Core
      */
     public function query_vars(array $vars): array
     {
-        return \collect($vars)->merge(['by'])->all();
+        return collect($vars)->merge(['by'])->all();
     }
 
     /**
@@ -96,7 +96,7 @@ final class Core
      */
     public function getDateTime(string $dateString = 'now'): DateTimeImmutable
     {
-        return new DateTimeImmutable(datetime: $dateString, timezone: \wp_timezone());
+        return new DateTimeImmutable(datetime: $dateString, timezone: wp_timezone());
     }
 
     /**
@@ -113,7 +113,7 @@ final class Core
      */
     private function getEvent(mixed $post): ?WP_Post
     {
-        $post = \get_post($post);
+        $post = get_post($post);
         return $this->isEvent($post) ? $post : null;
     }
 
@@ -125,7 +125,7 @@ final class Core
         if (!($postID = $this->getPostID($post))) {
             return false;
         }
-        return \in_array(\get_post_type($postID), [PostTypes::EVENT, PostTypes::RECURRENCE], true);
+        return in_array(get_post_type($postID), [PostTypes::EVENT, PostTypes::RECURRENCE], true);
     }
 
     /**
@@ -136,7 +136,7 @@ final class Core
         if (!($postID = $this->getPostID($post))) {
             return false;
         }
-        return \get_post_type($postID) === PostTypes::EVENT;
+        return get_post_type($postID) === PostTypes::EVENT;
     }
 
     /**
@@ -148,7 +148,7 @@ final class Core
             return false;
         }
 
-        return \get_post_type($postID) === PostTypes::LOCATION;
+        return get_post_type($postID) === PostTypes::LOCATION;
     }
 
     /**
@@ -160,7 +160,7 @@ final class Core
             return $post->ID;
         }
 
-        return \is_numeric($post) ? (int) $post : null;
+        return is_numeric($post) ? (int) $post : null;
     }
 
     /**
@@ -173,8 +173,8 @@ final class Core
             return [];
         }
 
-        return \collect([$event->ID])
-            ->merge(\get_posts([
+        return collect([$event->ID])
+            ->merge(get_posts([
                 'post_type' => [PostTypes::RECURRENCE],
                 'post_parent' => $event->ID,
                 'posts_per_page' => -1,
@@ -183,7 +183,7 @@ final class Core
                 'fields' => 'ids',
             ]))
             ->flip()
-            ->map(fn($_, $postID) => \get_field(EventFields::DATE_AND_TIME, $postID, false))
+            ->map(fn($_, $postID) => get_field(EventFields::DATE_AND_TIME, $postID, false))
             ->filter($this->isFilledString(...))
             ->sort()
             ->map(fn($date, $postID) => new EventDate($date, $postID))
@@ -195,7 +195,7 @@ final class Core
      */
     public function isFilledString(mixed $value): bool
     {
-        return \is_string($value) && \trim($value) !== '';
+        return is_string($value) && trim($value) !== '';
     }
 
     /**
@@ -208,7 +208,7 @@ final class Core
             return [];
         }
 
-        return \wp_get_object_terms($event->ID, self::FILTER_TAXONOMY);
+        return wp_get_object_terms($event->ID, self::FILTER_TAXONOMY);
     }
 
     /**
@@ -261,9 +261,9 @@ final class Core
             return $title;
         }
 
-        $locationTokens = \collect([
-            \get_post_meta($post->ID, EventFields::LOCATION_NAME, true),
-            \get_post_meta($post->ID, EventFields::LOCATION_SORT_NAME, true),
+        $locationTokens = collect([
+            get_post_meta($post->ID, EventFields::LOCATION_NAME, true),
+            get_post_meta($post->ID, EventFields::LOCATION_SORT_NAME, true),
         ])
             ->filter()
             ->join(' ');
@@ -276,14 +276,14 @@ final class Core
      */
     private function addWords(string $str, ?string $words = ''): string
     {
-        $words = \trim($words);
+        $words = trim($words);
 
         if (empty($words)) {
             return $str;
         }
 
-        foreach (\explode(' ', $words) as $word) {
-            if (!\str_contains(" $str ", " $word ")) {
+        foreach (explode(' ', $words) as $word) {
+            if (!str_contains(" $str ", " $word ")) {
                 $str = "$str $word";
             }
         }
@@ -296,10 +296,10 @@ final class Core
      */
     public function getDateForDisplay(string $dateString, bool $includeTime = false): string
     {
-        $dateFormat = \get_option('date_format');
-        $timeFormat = \get_option('time_format');
+        $dateFormat = get_option('date_format');
+        $timeFormat = get_option('time_format');
         $format = $includeTime ? "$dateFormat $timeFormat" : $dateFormat;
-        return \date_i18n($format, \strtotime($dateString));
+        return date_i18n($format, strtotime($dateString));
     }
 
     /**
@@ -314,9 +314,9 @@ final class Core
         ];
 
         /** keys === values */
-        $merge = \array_combine($merge, $merge);
+        $merge = array_combine($merge, $merge);
 
-        return \collect($postTypes)->merge($merge)->all();
+        return collect($postTypes)->merge($merge)->all();
     }
 
     /**
@@ -334,8 +334,8 @@ final class Core
 
         $query->set('year', get_query_var('year') ?: current_time('Y'));
 
-        if (!\is_admin()) {
-            $query->query_vars = \collect($query->query_vars)
+        if (!is_admin()) {
+            $query->query_vars = collect($query->query_vars)
                 ->replaceRecursive($this->getArchiveArgs($query))
                 ->all();
         }
@@ -348,9 +348,9 @@ final class Core
     {
         $wpdb = $this->utils->wpdb();
 
-        $groupby = \get_query_var('by', null);
+        $groupby = get_query_var('by', null);
 
-        $args = \collect(\array_replace_recursive([
+        $args = collect(array_replace_recursive([
             'post_type' => PostTypes::EVENT,
             'posts_per_page' => 6,
             'ignore_sticky_posts' => true,
@@ -367,7 +367,7 @@ final class Core
                     ],
                 ],
                 'acfe:clauses' => [
-                    'fields' => \collect([
+                    'fields' => collect([
                         "DATE($wpdb->postmeta.meta_value) as day",
                     ])->join(', '),
                     'groupby' => 'day',
@@ -386,7 +386,7 @@ final class Core
                     ],
                 ],
                 'acfe:clauses' => [
-                    'fields' => \collect([
+                    'fields' => collect([
                         'mt1.meta_value as ' . EventFields::LOCATION_NAME,
                         "$wpdb->postmeta.meta_value as " . EventFields::LOCATION_SORT_NAME,
                     ])->join(', '),
@@ -421,7 +421,7 @@ final class Core
             return [];
         }
 
-        $groupby ??= \get_query_var('by');
+        $groupby ??= get_query_var('by');
 
         return match ($groupby) {
             'day' => $this->groupByDay($query),
@@ -435,7 +435,7 @@ final class Core
      */
     private function getGroupDefaultArgs(WP_Query $query)
     {
-        return \collect($query->query_vars)
+        return collect($query->query_vars)
             ->except(['nopaging'])
             ->replaceRecursive([
                 'ignore_sticky_posts' => true,
@@ -454,22 +454,22 @@ final class Core
      */
     private function groupByDay(WP_Query $query): array
     {
-        if (!\count($query->posts)) {
+        if (!count($query->posts)) {
             return [];
         }
 
         /** @var WP_Post[]|object{day: string}[] $posts */
         $posts = $query->posts;
 
-        $days = \collect($posts)->map(function (object $post) {
-            return \property_exists($post, 'day')
+        $days = collect($posts)->map(function (object $post) {
+            return property_exists($post, 'day')
                 ? $post->day
                 : throw new RuntimeException("No 'day' found in post $post->ID");
         })->all();
 
         [$first, $last] = [
-            \collect($days)->first(),
-            \collect($days)->last(),
+            collect($days)->first(),
+            collect($days)->last(),
         ];
 
         $args = $this
@@ -490,8 +490,8 @@ final class Core
             ])
             ->all();
 
-        return \collect(\get_posts($args))
-            ->groupBy(fn($post) => $this->formatDayRelativeToToday(\get_field(
+        return collect(get_posts($args))
+            ->groupBy(fn($post) => $this->formatDayRelativeToToday(get_field(
                 EventFields::DATE_AND_TIME,
                 $post,
                 false,
@@ -507,15 +507,15 @@ final class Core
      */
     private function groupByLocation(WP_Query $query): array
     {
-        if (!\count($query->posts)) {
+        if (!count($query->posts)) {
             return [];
         }
 
         /** @var WP_Post[]|object[] $posts */
         $posts = $query->posts;
 
-        $locationSortNames = \collect($posts)->map(function (object $post) {
-            return \property_exists($post, EventFields::LOCATION_SORT_NAME)
+        $locationSortNames = collect($posts)->map(function (object $post) {
+            return property_exists($post, EventFields::LOCATION_SORT_NAME)
                 ? $post->{EventFields::LOCATION_SORT_NAME}
                 : throw new RuntimeException("No 'EventFields::LOCATION_SORT_NAME' found in post $post->ID");
         })->all();
@@ -527,12 +527,12 @@ final class Core
                     'acfe_min_location_sort_name' => [
                         'key' => EventFields::LOCATION_SORT_NAME,
                         'compare' => '>=',
-                        'value' => \collect($locationSortNames)->first(),
+                        'value' => collect($locationSortNames)->first(),
                     ],
                     'acfe_max_location_sort_name' => [
                         'key' => EventFields::LOCATION_SORT_NAME,
                         'compare' => '<=',
-                        'value' => \collect($locationSortNames)->last(),
+                        'value' => collect($locationSortNames)->last(),
                     ],
                     EventFields::DATE_AND_TIME => [
                         'key' => EventFields::DATE_AND_TIME,
@@ -545,8 +545,8 @@ final class Core
             ])
             ->all();
 
-        return \collect(\get_posts($args))
-            ->groupBy(fn($post) => \get_field(EventFields::LOCATION_NAME, $post))
+        return collect(get_posts($args))
+            ->groupBy(fn($post) => get_field(EventFields::LOCATION_NAME, $post))
             ->map(fn($group, $title) => new GroupedEvents(title: $title, posts: $group->all()))
             ->values()
             ->all();
@@ -560,11 +560,11 @@ final class Core
         $customClauses = $query->query_vars['acfe:clauses'] ?? null;
         unset($query->query_vars['acfe:clauses']);
 
-        if (!\is_array($customClauses)) {
+        if (!is_array($customClauses)) {
             return $clauses;
         }
 
-        return \collect($clauses)->replaceRecursive($customClauses)->all();
+        return collect($clauses)->replaceRecursive($customClauses)->all();
     }
 
     /**
@@ -572,18 +572,18 @@ final class Core
      */
     public function term_link(string $link, WP_Term $term)
     {
-        $postType = \get_taxonomy($term->taxonomy)->object_type[0] ?? null;
+        $postType = get_taxonomy($term->taxonomy)->object_type[0] ?? null;
 
         if ($postType !== PostTypes::EVENT) {
             return $link;
         }
 
-        $archiveURL = \get_post_type_archive_link(PostTypes::EVENT);
+        $archiveURL = get_post_type_archive_link(PostTypes::EVENT);
         $currentURL = $this->getCurrentURL(true);
 
-        $url = \str_starts_with($currentURL, $archiveURL) ? $currentURL : $archiveURL;
+        $url = str_starts_with($currentURL, $archiveURL) ? $currentURL : $archiveURL;
 
-        return \add_query_arg(['filter' => $term->slug], $url);
+        return add_query_arg(['filter' => $term->slug], $url);
     }
 
     /**
@@ -591,8 +591,8 @@ final class Core
      */
     public function getFlatPostMeta(int $postID): array
     {
-        return \collect(\get_post_meta($postID))->map(
-            fn(mixed $_, string $key) => \get_post_meta($postID, $key, true),
+        return collect(get_post_meta($postID))->map(
+            fn(mixed $_, string $key) => get_post_meta($postID, $key, true),
         )->all();
     }
 
@@ -604,10 +604,10 @@ final class Core
         if (!$this->isEvent($post)) {
             return null;
         }
-        $duration = \get_field(EventFields::DURATION, $post);
+        $duration = get_field(EventFields::DURATION, $post);
         $minutes = $this->durationToMinutes($duration);
 
-        $label = \__('Minutes', 'acf-events');
+        $label = __('Minutes', 'acf-events');
 
         return $minutes ? "$minutes $label" : null;
     }
@@ -617,11 +617,11 @@ final class Core
      */
     private function durationToMinutes(?string $duration): int
     {
-        if (!$this->isFilledString($duration) || !\str_contains($duration, ':')) {
+        if (!$this->isFilledString($duration) || !str_contains($duration, ':')) {
             return 0;
         }
 
-        [$hours, $minutes] = \collect(\explode(':', $duration))->map(fn($value) => \absint($value))->all();
+        [$hours, $minutes] = collect(explode(':', $duration))->map(fn($value) => absint($value))->all();
 
         return ($hours * 60) + $minutes;
     }
@@ -631,7 +631,7 @@ final class Core
      */
     public function isVisiblePostStatus(int $postID)
     {
-        return \collect(['publish', 'future', 'private'])->contains(\get_post_status($postID));
+        return collect(['publish', 'future', 'private'])->contains(get_post_status($postID));
     }
 
     /**
@@ -643,24 +643,24 @@ final class Core
         ?string $relativeDateFormat = ', d. F Y',
         ?string $absoluteDateFormat = null,
     ): string {
-        $absoluteDateFormat ??= \get_option('date_format');
+        $absoluteDateFormat ??= get_option('date_format');
 
-        if (\is_string($date)) {
+        if (is_string($date)) {
             $date = new DateTimeImmutable($date);
         }
 
-        $today = new DateTimeImmutable(\current_time('mysql'));
+        $today = new DateTimeImmutable(current_time('mysql'));
 
         $relativeDay = match (true) {
-            $this->isSameDay($date, $today) => \__('Today', 'acf-events'),
-            $this->isSameDay($date, $today->modify('- 1 day')) => \__('Yesterday', 'acf-events'),
-            $this->isSameDay($date, $today->modify('+ 1 day')) => \__('Tomorrow', 'acf-events'),
+            $this->isSameDay($date, $today) => __('Today', 'acf-events'),
+            $this->isSameDay($date, $today->modify('- 1 day')) => __('Yesterday', 'acf-events'),
+            $this->isSameDay($date, $today->modify('+ 1 day')) => __('Tomorrow', 'acf-events'),
             default => null,
         };
 
         return match (!!$relativeDay) {
-            true => $relativeDay . \date_i18n($relativeDateFormat, $date->getTimestamp()),
-            default => \date_i18n($absoluteDateFormat, $date->getTimestamp()),
+            true => $relativeDay . date_i18n($relativeDateFormat, $date->getTimestamp()),
+            default => date_i18n($absoluteDateFormat, $date->getTimestamp()),
         };
     }
 
@@ -681,7 +681,7 @@ final class Core
     public function guessPostType(WP_Query $query): ?string
     {
         if (!empty($query->query_vars['post_type'])) {
-            return \collect($query->query_vars['post_type'])->first();
+            return collect($query->query_vars['post_type'])->first();
         }
 
         $queriedObject = $query->get_queried_object();
@@ -695,9 +695,9 @@ final class Core
         }
 
         if ($queriedObject instanceof \WP_Term) {
-            $tax = \get_taxonomy($queriedObject->taxonomy);
+            $tax = get_taxonomy($queriedObject->taxonomy);
             if ($tax->public) {
-                return \collect($tax->object_type)->first();
+                return collect($tax->object_type)->first();
             }
         }
 
@@ -709,10 +709,10 @@ final class Core
      */
     public function getCurrentURL(bool $includeQuery = false): string
     {
-        $url = \set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+        $url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         if (!$includeQuery) {
-            $url = \explode('?', $url)[0];
+            $url = explode('?', $url)[0];
         }
         return $url;
     }
@@ -722,7 +722,7 @@ final class Core
      */
     public function addPostType(string $name, string $slug, array $args, ?bool $filter = false): void
     {
-        $args = \array_merge([
+        $args = array_merge([
             'menu_icon' => 'dashicons-star-filled',
             'with_filter' => false,
             'exclude_from_search' => false,
@@ -730,9 +730,9 @@ final class Core
         ], $args);
 
         /** Assume the menu icon is a local SVG file if it doesn't start with dashicons- */
-        if (!\str_starts_with($args['menu_icon'], 'dashicons-')) {
-            $localSvgFile = \file_get_contents(\get_theme_file_path($args['menu_icon']));
-            $args['menu_icon'] = 'data:image/svg+xml;base64,' . \base64_encode($localSvgFile);
+        if (!str_starts_with($args['menu_icon'], 'dashicons-')) {
+            $localSvgFile = file_get_contents(get_theme_file_path($args['menu_icon']));
+            $args['menu_icon'] = 'data:image/svg+xml;base64,' . base64_encode($localSvgFile);
         }
 
         $archive_slug = $args['has_archive'];
@@ -744,7 +744,7 @@ final class Core
 
         if ($archive_slug && $filter) {
             $taxonomy = "{$name}_filter";
-            \register_taxonomy($taxonomy, $name, [
+            register_taxonomy($taxonomy, $name, [
                 'labels' => [
                     'name' => "$singular_name Filters",
                     'singular_name' => "$singular_name Filter",
@@ -759,7 +759,7 @@ final class Core
             ]);
         }
 
-        $post_type_args = \wp_parse_args($args, [
+        $post_type_args = wp_parse_args($args, [
             'public' => true,
             'rewrite' => [
                 'with_front' => false,
@@ -774,7 +774,7 @@ final class Core
             'map_meta_cap' => true,
         ]);
 
-        \register_post_type($name, $post_type_args);
+        register_post_type($name, $post_type_args);
     }
 
     /**
@@ -785,7 +785,7 @@ final class Core
      */
     public function relevanssi_hits_filter(array $hits, WP_Query $query): array
     {
-        $groupby = \get_query_var('by');
+        $groupby = get_query_var('by');
 
         /**
          * Only group hits when in the main query
@@ -795,18 +795,18 @@ final class Core
         }
 
         $hits[0] = match ($groupby) {
-            'day' => \collect($hits[0])
+            'day' => collect($hits[0])
                 ->each(
-                    fn($hit) => $hit->day = \date(
+                    fn($hit) => $hit->day = date(
                         'Y-m-d',
-                        \strtotime(\get_field(EventFields::DATE_AND_TIME, $hit->ID, false)),
+                        strtotime(get_field(EventFields::DATE_AND_TIME, $hit->ID, false)),
                     ),
                 )
                 ->unique('day')
                 ->all(),
-            'location' => \collect($hits[0])
+            'location' => collect($hits[0])
                 ->each(
-                    fn($hit) => $hit->{EventFields::LOCATION_SORT_NAME} = \get_field(
+                    fn($hit) => $hit->{EventFields::LOCATION_SORT_NAME} = get_field(
                         EventFields::LOCATION_SORT_NAME,
                         $hit->ID,
                     ),
@@ -824,9 +824,9 @@ final class Core
      */
     private function customizeEditColumns(): void
     {
-        \collect([PostTypes::EVENT, PostTypes::RECURRENCE])->each(function (string $postType) {
-            \add_filter("manage_edit-{$postType}_columns", $this->addCustomEditColumns(...));
-            \add_action("manage_{$postType}_posts_custom_column", $this->handleCustomEditColumns(...), 10, 2);
+        collect([PostTypes::EVENT, PostTypes::RECURRENCE])->each(function (string $postType) {
+            add_filter("manage_edit-{$postType}_columns", $this->addCustomEditColumns(...));
+            add_action("manage_{$postType}_posts_custom_column", $this->handleCustomEditColumns(...), 10, 2);
         });
     }
 
@@ -839,23 +839,23 @@ final class Core
         unset($columns['author']);
 
         $newColumns = [
-            'acfe:thumbnail' => \__('Post Thumbnail'),
+            'acfe:thumbnail' => __('Post Thumbnail'),
         ];
 
-        switch (\get_current_screen()?->post_type) {
+        switch (get_current_screen()?->post_type) {
             case PostTypes::EVENT:
-                $newColumns['acfe:location'] = \__('Location', 'acf-events');
-                $newColumns['acfe:dates'] = \__('Dates', 'acf-events');
+                $newColumns['acfe:location'] = __('Location', 'acf-events');
+                $newColumns['acfe:dates'] = __('Dates', 'acf-events');
                 break;
             case PostTypes::RECURRENCE:
-                $newColumns['acfe:location'] = \__('Location', 'acf-events');
-                $newColumns['acfe:date_and_time'] = \__('Date', 'acf-events');
+                $newColumns['acfe:location'] = __('Location', 'acf-events');
+                $newColumns['acfe:date_and_time'] = __('Date', 'acf-events');
                 break;
         }
 
         /** inject at the second position (after the title) */
-        $rest = \array_splice($columns, 2);
-        return \array_merge($columns, $newColumns, $rest);
+        $rest = array_splice($columns, 2);
+        return array_merge($columns, $newColumns, $rest);
     }
 
     /**
@@ -865,16 +865,16 @@ final class Core
     {
         switch ($column) {
             case 'acfe:thumbnail':
-                echo \get_the_post_thumbnail($postID, 'thumbnail', [
+                echo get_the_post_thumbnail($postID, 'thumbnail', [
                     'style' => 'display: block; height: 80px; width: auto;',
                 ]);
                 break;
             case 'acfe:dates':
                 echo
-                    \collect($this->getEventDates($postID))
+                    collect($this->getEventDates($postID))
                         ->map(function (EventDate $date) {
                             $text = $date->toFormattedString();
-                            $url = \get_permalink($date->postID);
+                            $url = get_permalink($date->postID);
                             return "<a href='$url' target='_blank'>$text</a>";
                         })
                         ->join('<br>')
@@ -882,19 +882,19 @@ final class Core
                 break;
 
             case 'acfe:location':
-                if ($locationID = \get_field(EventFields::LOCATION_ID, $postID)) {
-                    $editLink = \get_edit_post_link($locationID);
-                    $title = \get_the_title($locationID);
+                if ($locationID = get_field(EventFields::LOCATION_ID, $postID)) {
+                    $editLink = get_edit_post_link($locationID);
+                    $title = get_the_title($locationID);
                     echo "<a href='$editLink'>$title</a>";
                 }
 
                 break;
             case 'acfe:date_and_time':
-                $dateFormat = \get_option('date_format');
+                $dateFormat = get_option('date_format');
                 $format = "$dateFormat, H:i";
 
-                $dateString = \get_field(EventFields::DATE_AND_TIME, $postID, false);
-                echo \date_i18n($format, \strtotime($dateString));
+                $dateString = get_field(EventFields::DATE_AND_TIME, $postID, false);
+                echo date_i18n($format, strtotime($dateString));
                 break;
         }
     }

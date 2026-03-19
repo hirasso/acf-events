@@ -33,11 +33,11 @@ final class EventFields extends Fields
 
     protected function addFields()
     {
-        \add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
-        \add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_SORT_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
-        \add_action('acf/render_field/key=' . self::key(self::LOCATION_ID), [__CLASS__, 'render_field_location_id']);
+        add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
+        add_filter('acf/prepare_field/key=' . self::key(self::LOCATION_SORT_NAME), [__CLASS__, 'restrict_debug_field_visibilty']);
+        add_action('acf/render_field/key=' . self::key(self::LOCATION_ID), [__CLASS__, 'render_field_location_id']);
 
-        \acf_add_local_field_group([
+        acf_add_local_field_group([
             'key' => self::GROUP_KEY,
             'title' => self::GROUP_TITLE,
             'fields' => [
@@ -210,13 +210,13 @@ final class EventFields extends Fields
             return;
         }
 
-        if (!$location = \get_post($locationID)) {
+        if (!$location = get_post($locationID)) {
             return;
         }
         $recursing = true;
-        $editLink = \get_edit_post_link($location);
+        $editLink = get_edit_post_link($location);
 
-        \ob_start() ?>
+        ob_start() ?>
         <style>
             [data-name="<?= self::LOCATION_ID ?>"] .acf-input {
                 display: flex;
@@ -232,11 +232,11 @@ final class EventFields extends Fields
                 })
             });
         </script>
-        <a title="Edit Location" data-edit-location href="<?= \esc_url($editLink) ?>" class="dashicons dashicons-arrow-right-alt">
+        <a title="Edit Location" data-edit-location href="<?= esc_url($editLink) ?>" class="dashicons dashicons-arrow-right-alt">
             <span class="screen-reader-text">Edit Location</span>
         </a>
 
-        <?php echo \ob_get_clean();
+        <?php echo ob_get_clean();
     }
 
     /**
@@ -244,7 +244,7 @@ final class EventFields extends Fields
      */
     public static function restrict_debug_field_visibilty(?array $field): ?array
     {
-        if (!\current_user_can('administrator')) {
+        if (!current_user_can('administrator')) {
             return null;
         }
         $field['label'] .= ' (Only visible for admins)';

@@ -94,12 +94,12 @@ final class Locations
         $sortName = "";
 
         if ($this->core->isLocation($locationID)) {
-            $name = \get_the_title($locationID);
-            $sortName = \get_post_meta($locationID, LocationFields::SORT_NAME, true) ?: $name;
+            $name = get_the_title($locationID);
+            $sortName = get_post_meta($locationID, LocationFields::SORT_NAME, true) ?: $name;
         }
 
-        \update_post_meta($eventID, EventFields::LOCATION_NAME, $name);
-        \update_post_meta($eventID, EventFields::LOCATION_SORT_NAME, $sortName);
+        update_post_meta($eventID, EventFields::LOCATION_NAME, $name);
+        update_post_meta($eventID, EventFields::LOCATION_SORT_NAME, $sortName);
     }
 
     /**
@@ -114,15 +114,15 @@ final class Locations
             return;
         }
 
-        \remove_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20);
+        remove_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20);
 
-        \do_action('acfe/save_location', $locationID, $post);
+        do_action('acfe/save_location', $locationID, $post);
 
         foreach ($this->core->getEventsAtLocation($locationID) as $eventID) {
             $this->updateEvent($eventID, $locationID);
         }
 
-        \add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
+        add_action("wp_after_insert_post", [$this, 'wp_after_insert_post'], 20, 2);
     }
 
     /**
@@ -136,7 +136,7 @@ final class Locations
 
         $postID = (int) $args[0];
 
-        return \count($this->core->getEventsAtLocation($postID, 1))
+        return count($this->core->getEventsAtLocation($postID, 1))
             ? ['do_not_allow']
             : $caps;
     }
@@ -149,7 +149,7 @@ final class Locations
      */
     public function acf_pre_update_value(mixed $check, mixed $value, string|int $postID, array $field): mixed
     {
-        if (\collect([EventFields::LOCATION_NAME, EventFields::LOCATION_SORT_NAME])->contains($field['name'])) {
+        if (collect([EventFields::LOCATION_NAME, EventFields::LOCATION_SORT_NAME])->contains($field['name'])) {
             return 'Blocked update via ACF update_value(), as this field is managed by ACFEvents';
         }
         return $check;
