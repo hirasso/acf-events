@@ -332,13 +332,33 @@ final class Core
             return;
         }
 
-        $query->set('year', get_query_var('year') ?: current_time('Y'));
+        /**
+         * This runs in the admin as well as the frontend
+         */
+        $year = $this->getQueriedYear($query);
+        $query->set('year', $year);
 
         if (!is_admin()) {
             $query->query_vars = collect($query->query_vars)
                 ->replaceRecursive($this->getArchiveArgs($query))
                 ->all();
         }
+    }
+
+    /**
+     * Get the currently queried year. Also handle searches for years.
+     */
+    public function getQueriedYear(?WP_Query $query): int
+    {
+        $query ??= $this->utils->mainQuery();
+
+        if ($this->utils->isYear($query->get('year'))) {
+            return (int) $query->get('year');
+        }
+        if ($this->utils->isYear($query->get('s'))) {
+            return (int) $query->get('s');
+        }
+        return (int) current_time('Y');
     }
 
     /**
@@ -913,7 +933,7 @@ final class Core
             return;
         }
 
-        $selectedYear = (int) get_query_var('year');
+        $selectedYear = $this->getQueriedYear(null);
 
         ob_start(); ?>
         <select name="year">
@@ -933,5 +953,25 @@ final class Core
 
         </select>
         <?php echo ob_get_clean();
+    }
+
+    /**
+     * Check if a query is a yearly archive
+     * – post type is acfe-event
+     * – year is set
+     * – year is smaller then current year
+     */
+    public function isYearlyArchive(WP_Query $query): bool
+    {
+
+        if ($this->guessPostType($query) !== PostTypes::EVENT) {
+            return false;
+        }
+
+        if (!$year = $this->getQueriedYear($query)) {
+            return false;
+        }
+
+        return $year < (int) current_time('Y');
     }
 }

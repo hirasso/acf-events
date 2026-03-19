@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hirasso\ACFEvents\Internal;
 
 use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
+use WP_Query;
 use wpdb;
 
 final class Utils
@@ -31,6 +32,15 @@ final class Utils
     {
         global $wpdb;
         return $wpdb;
+    }
+
+    /**
+     * Access the main WP_Query instance
+     */
+    public function mainQuery(): WP_Query
+    {
+        global $wp_query;
+        return $wp_query;
     }
 
     /**
@@ -78,5 +88,25 @@ final class Utils
         return collect($wpdb->get_col($query))
             ->map(absint(...))
             ->all();
+    }
+
+    /**
+     * Does an unknown variable look like a year?
+     */
+    public function isYear(mixed $var): bool
+    {
+        return
+            is_numeric($var)
+            && preg_match('/^\d{4}$/', trim((string) $var)) === 1
+            && (int) $var >= 1000
+            && (int) $var <= 9999;
+    }
+
+    /**
+     * Check if a value is the current year
+     */
+    public function isCurrentYear(int $value): bool
+    {
+        return $value === (int) current_time('Y');
     }
 }
