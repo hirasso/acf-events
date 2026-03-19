@@ -92,26 +92,44 @@ final class Recurrences
 
         $recurrences = $this->createRecurrences($postID);
 
-        if (function_exists('pll_get_post_translations')) {
-            $currentLang = pll_get_post_language($postID);
-            /** @var array<int, array<string, int>> $recurrences */
-            $recurrences = collect($recurrences)
-                ->map(fn($postID) => [$currentLang => $postID])
-                ->all();
+        $this->createPolylangTranslations($postID, $recurrences);
+    }
 
-            collect(pll_get_post_translations($postID))
-                ->reject($postID)
-                ->each(function ($translationID, $lang) use (&$recurrences) {
+    /**
+     * Create Polylang translations for all recurrences
+     * @param list<int> $recurrences
+     */
+    private function createPolylangTranslations(int $postID, array $recurrences): void
+    {
+        if (empty($recurrences)) {
+            return;
+        }
 
-                    foreach ($this->createRecurrences($translationID) as $index => $postID) {
-                        $recurrences[$index][$lang] = $postID;
-                    }
+        if (!function_exists('pll_get_post_language')) {
+            return;
+        }
 
-                });
+        if (!$currentLang = pll_get_post_language($postID)) {
+            return;
+        }
 
-            foreach ($recurrences as $languagesAndIds) {
-                pll_save_post_translations($languagesAndIds);
-            }
+        /** @var array<int, array<string, int>> $linked */
+        $linked = collect($recurrences)
+            ->map(fn($postID) => [$currentLang => $postID])
+            ->all();
+
+        collect(pll_get_post_translations($postID))
+            ->reject($postID)
+            ->each(function ($translationID, $lang) use (&$linked) {
+
+                foreach ($this->createRecurrences($translationID) as $index => $postID) {
+                    $linked[$index][$lang] = $postID;
+                }
+
+            });
+
+        foreach ($linked as $languagesAndIds) {
+            pll_save_post_translations($languagesAndIds);
         }
     }
 
