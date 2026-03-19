@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace RH\AdminUtils;
-
 use Exception;
 use SplFileInfo;
 use ZipArchive;
