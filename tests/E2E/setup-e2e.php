@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Plugin Name: ACF Events Setup Plugin
- * Description: Prepares the @wordpress/env environment for e2e tests
+ * Plugin Name: FPEvents Setup Plugin
+ * Description: Initializes FPEvents in wp-env and creates content for e2e tests
  */
 
 namespace Hirasso\WP\FPEvents\Tests\E2E;
