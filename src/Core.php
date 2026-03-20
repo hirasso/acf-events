@@ -594,13 +594,15 @@ final class Core
      */
     public function applyGroupByClause(array $clauses, WP_Query $query): array
     {
-        /**
-         * @var ?GroupByMetaClause $groupByClause
-         */
+        /** @var ?GroupByMetaClause $groupByClause */
         $groupByClause = $query->get('acfe:groupby-clause');
+
         if (!$groupByClause) {
             return $clauses;
         }
+
+        /** Only apply the clause once */
+        $query->set('acfe:groupby-clause', '');
 
         $alias = collect($query->meta_query->get_clauses())
             ->map(fn($clause) => $clause['alias'])
