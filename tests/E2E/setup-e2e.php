@@ -12,8 +12,8 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-/** Load the composer autoloader from acf-events.php */
-require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
+/** Load the composer autoloader from festival-perspectives-events.php */
+require_once dirname(__DIR__) . '/festival-perspectives-events/vendor/autoload.php';
 
 /**
  * Check what env we are currently in

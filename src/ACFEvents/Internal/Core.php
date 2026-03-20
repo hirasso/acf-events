@@ -627,7 +627,7 @@ final class Core
         $duration = get_field(EventFields::DURATION, $post);
         $minutes = $this->durationToMinutes($duration);
 
-        $label = __('Minutes', 'acf-events');
+        $label = __('Minutes', 'festival-perspectives-events');
 
         return $minutes ? "$minutes $label" : null;
     }
@@ -672,9 +672,9 @@ final class Core
         $today = new DateTimeImmutable(current_time('mysql'));
 
         $relativeDay = match (true) {
-            $this->isSameDay($date, $today) => __('Today', 'acf-events'),
-            $this->isSameDay($date, $today->modify('- 1 day')) => __('Yesterday', 'acf-events'),
-            $this->isSameDay($date, $today->modify('+ 1 day')) => __('Tomorrow', 'acf-events'),
+            $this->isSameDay($date, $today) => __('Today', 'festival-perspectives-events'),
+            $this->isSameDay($date, $today->modify('- 1 day')) => __('Yesterday', 'festival-perspectives-events'),
+            $this->isSameDay($date, $today->modify('+ 1 day')) => __('Tomorrow', 'festival-perspectives-events'),
             default => null,
         };
 
@@ -864,12 +864,12 @@ final class Core
 
         switch (get_current_screen()?->post_type) {
             case PostTypes::EVENT:
-                $newColumns['acfe:location'] = __('Location', 'acf-events');
-                $newColumns['acfe:dates'] = __('Dates', 'acf-events');
+                $newColumns['acfe:location'] = __('Location', 'festival-perspectives-events');
+                $newColumns['acfe:dates'] = __('Dates', 'festival-perspectives-events');
                 break;
             case PostTypes::RECURRENCE:
-                $newColumns['acfe:location'] = __('Location', 'acf-events');
-                $newColumns['acfe:date_and_time'] = __('Date', 'acf-events');
+                $newColumns['acfe:location'] = __('Location', 'festival-perspectives-events');
+                $newColumns['acfe:date_and_time'] = __('Date', 'festival-perspectives-events');
                 break;
         }
 
@@ -945,7 +945,7 @@ final class Core
                 ]) ?>>
                     <?php
                         echo $year === $selectedYear
-                        ? sprintf(__('Year %s', 'acf-events'), $year)
+                        ? sprintf(__('Year %s', 'festival-perspectives-events'), $year)
                         : $year;
                 ?>
                 </option>

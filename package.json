@@ -1,5 +1,5 @@
 {
-  "name": "acf-events",
+  "name": "festival-perspectives-events",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "version": "pnpm changeset version",
     "wp-env": "wp-env",
     "wp-env-test": "wp-env --config=.wp-env.test.json",
-    "wp-env:cli": "wp-env run cli --env-cwd=wp-content/plugins/acf-events",
-    "wp-env-test:cli": "pnpm wp-env-test run cli --env-cwd=wp-content/plugins/acf-events",
+    "wp-env:cli": "wp-env run cli --env-cwd=wp-content/plugins/festival-perspectives-events",
+    "wp-env-test:cli": "pnpm wp-env-test run cli --env-cwd=wp-content/plugins/festival-perspectives-events",
     "wp-env:launch": "open $(wp-env status --json | jq -r '.urls.development')",
     "wp-env-test:launch": "open $(wp-env --config .wp-env.test.json status --json | jq -r '.urls.development')",
     "test:integration": "pnpm run wp-env-test:cli vendor/bin/pest --no-coverage",

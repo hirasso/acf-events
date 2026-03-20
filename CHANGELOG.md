@@ -1,4 +1,4 @@
-# Changelog: `hirasso/acf-events`
+# Changelog: `hirasso/festival-perspectives-events`
 
 ## 0.0.1
 

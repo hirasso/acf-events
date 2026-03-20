@@ -10,8 +10,8 @@
   ],
   "port": 2233,
   "mappings": {
-    "wp-content/plugins/acf-events": ".",
-    "wp-content/plugins/acf-events-setup": "./tests/E2E"
+    "wp-content/plugins/festival-perspectives-events": ".",
+    "wp-content/plugins/festival-perspectives-events-setup": "./tests/E2E"
   },
   "testsEnvironment": false,
   "config": {

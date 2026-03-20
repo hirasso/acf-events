@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: https://github.com/hirasso/acf-events/\n"
+"Report-Msgid-Bugs-To: https://github.com/hirasso/festival-perspectives-events/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: acf-events\n"
+"X-Domain: festival-perspectives-events\n"
 
 #: src/ACFEvents/Internal/Core.php:630
 msgid "Minutes"
