@@ -6,6 +6,7 @@ namespace Hirasso\WP\FPEvents;
 
 use DateTime;
 use DateTimeImmutable;
+use Exception;
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
 use RuntimeException;
 use WP_Post;
@@ -606,7 +607,8 @@ final class Core
 
         $alias = collect($query->meta_query->get_clauses())
             ->map(fn($clause) => $clause['alias'])
-            ->get($groupByClause->key);
+            ->get($groupByClause->key)
+            ?? throw new Exception("No post clause alias found for '{$groupByClause->key}'");
 
         $clauses['fields'] = str_replace('{alias}', $alias, $groupByClause->expression);
         $clauses['groupby'] = $groupByClause->groupby;
