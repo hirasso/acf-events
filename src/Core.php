@@ -958,7 +958,7 @@ final class Core
             return;
         }
 
-        $years = $this->utils->getYears($postType, null);
+        $years = $this->utils->getYears($postType, ['publish']);
         if (empty($years)) {
             return;
         }
