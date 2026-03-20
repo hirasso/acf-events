@@ -13,7 +13,7 @@ class BasicTest extends TestCase
     {
         parent::setUp();
         // $this->setupPolylangLanguages();
-        acf_events();
+        fp_events();
     }
 
     private function setupPolylangLanguages(): void
@@ -62,7 +62,7 @@ class BasicTest extends TestCase
          * Augment $_POST to test recurrency creation
          * The fact this needs to be hacked here points to a weakness in the
          * implementation. We should maybe look into update_post_meta or so.
-         * OR we could add a new API function acf_events()->addRecurrence($eventId, $dateAndTime)...
+         * OR we could add a new API function fp_events()->addRecurrence($eventId, $dateAndTime)...
          * not sure about this.
          */
         $_POST = [

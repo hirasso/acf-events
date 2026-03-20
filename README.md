@@ -17,5 +17,5 @@ Then, in your theme's `functions.php` or wherever you boot your site:
 
 ```php
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-acf_events();
+fp_events();
 ```

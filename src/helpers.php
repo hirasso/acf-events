@@ -3,7 +3,7 @@
 use Hirasso\FestivalPerspectivesEvents\FestivalPerspectivesEvents;
 
 /** @return FestivalPerspectivesEvents */
-function acf_events()
+function fp_events()
 {
     return FestivalPerspectivesEvents::init();
 }
