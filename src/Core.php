@@ -332,10 +332,21 @@ final class Core
             return;
         }
 
-        /**
-         * This runs in the admin as well as the frontend
-         */
-        $year = $this->getQueriedYear($query);
+        /** restrict the year, both in the frontend as well as in the admin */
+        $this->restrictToYear($query, $this->getQueriedYear($query));
+
+        if (!is_admin()) {
+            $query->query_vars = collect($query->query_vars)
+                ->replaceRecursive($this->getArchiveArgs($query))
+                ->all();
+        }
+    }
+
+    /**
+     * Restrict events to a certain year
+     */
+    private function restrictToYear(WP_Query $query, int $year): void
+    {
         $query->set('year', '');
         $query->query_vars = array_replace_recursive($query->query_vars, [
             'meta_query' => [
@@ -347,12 +358,6 @@ final class Core
                 ],
             ],
         ]);
-
-        if (!is_admin()) {
-            $query->query_vars = collect($query->query_vars)
-                ->replaceRecursive($this->getArchiveArgs($query))
-                ->all();
-        }
     }
 
     /**
