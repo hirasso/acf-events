@@ -10,9 +10,9 @@
 
 ## Main Features
 
-- Basic fields for Events and Locations
-- Different views: A-Z, By Day, By Location
-- Auatomatic Recurrence management based on an ACF repeater "Further Dates"
+- Interface for creating events and locations
+- Different filters in the frontend: A-Z, by day, by year, by location
+- Automatic creation of recurrences based on a repeater field "Further Dates"
 
 ## Screenshots
 
