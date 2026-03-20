@@ -4,7 +4,15 @@
 
 **📆 Open sourced code that powers the program events and locations on the FESTIVAL PERSPECTIVES website. Based on WordPress + Advanced Custom Fields.**
 
+## Demo
+
 **https://www.festival-perspectives.de/programm/**
+
+## Main Features
+
+- Basic fields for Events and Locations
+- Different views: A-Z, By Day, By Location
+- Auatomatic Recurrence management based on an ACF repeater "Further Dates"
 
 ![CleanShot 2026-03-20 at 09 24 12@2x](https://github.com/user-attachments/assets/b208c360-1ca9-404a-8cb7-b60046fe6120)
 
