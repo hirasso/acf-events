@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hirasso\WP\FPEvents;
 
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use InvalidArgumentException;
 use WP_Query;
 use wpdb;
 
@@ -127,5 +128,16 @@ final class Utils
         $request = preg_replace('/\s+$/m', '', $request);
 
         return $request;
+    }
+
+    /**
+     * Parse a value, make sure it's a non-empty string
+     */
+    public function nonEmptyString(mixed $value): string
+    {
+        return match (true) {
+            is_string($value) && trim($value) !== "" => $value,
+            default => throw new InvalidArgumentException("Not a non-empty string: {$value}"),
+        };
     }
 }

@@ -1,0 +1,20 @@
+<?php
+
+/*
+ * Copyright (c) Rasso Hilber
+ * https://rassohilber.com
+ */
+
+namespace Hirasso\WP\FPEvents;
+
+final class GroupByMetaClause
+{
+    public function __construct(
+        public string $key,
+        public ?string $expression = null,
+        public ?string $groupby = null,
+    ) {
+        $this->groupby ??= $key;
+        $this->expression ??= "{alias}.meta_value as $key";
+    }
+}

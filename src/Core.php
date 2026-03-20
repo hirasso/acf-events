@@ -47,11 +47,11 @@ final class Core
         add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
         add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
         add_filter('query_vars', [$this, 'query_vars']);
-        add_filter('posts_clauses', $this->posts_clauses(...), 1000, 2);
         add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
         add_filter('term_link', [$this, 'term_link'], 10, 2);
         add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
         add_action('restrict_manage_posts', $this->renderYearFilter(...));
+        add_filter('posts_clauses', $this->applyGroupByClause(...), 1000, 2);
 
         return $this;
     }
@@ -414,12 +414,11 @@ final class Core
                         ],
                     ],
                 },
-                'acfe:clauses' => [
-                    'meta_fields' => [
-                        EventFields::DATE_AND_TIME => 'DATE({alias}.meta_value) as day',
-                    ],
-                    'groupby' => 'day',
-                ],
+                'acfe:groupby-clause' => new GroupByMetaClause(
+                    key: EventFields::DATE_AND_TIME,
+                    groupby: 'day',
+                    expression: 'DATE({alias}.meta_value) as day',
+                ),
             ],
             // locations
             $groupby === 'location' => [
@@ -434,13 +433,7 @@ final class Core
                         'compare' => 'EXISTS',
                     ],
                 ],
-                'acfe:clauses' => [
-                    'meta_fields' => [
-                        EventFields::LOCATION_NAME => "{alias}.meta_value as " . EventFields::LOCATION_NAME,
-                        EventFields::LOCATION_SORT_NAME => "{alias}.meta_value as " . EventFields::LOCATION_SORT_NAME,
-                    ],
-                    'groupby' => EventFields::LOCATION_SORT_NAME,
-                ],
+                'acfe:groupby-clause' => new GroupByMetaClause(EventFields::LOCATION_SORT_NAME),
             ],
             // filtered
             !$groupby && $query->is_tax() => [
@@ -602,45 +595,26 @@ final class Core
     }
 
     /**
-     * Inject custom clauses for grouping posts by meta field
+     * Inject the custom GroupByMetaClause into WP posts clauses
      */
-    public function posts_clauses(array $clauses, WP_Query $query): array
+    public function applyGroupByClause(array $clauses, WP_Query $query): array
     {
         /**
-         * @var ?array{
-         *   meta_fields?: list<string>|array<string, string>,
-         *   groupby: string
-         * } $customClauses
+         * @var ?GroupByMetaClause $groupByClause
          */
-        $customClauses = $query->query_vars['acfe:clauses'] ?? null;
-        unset($query->query_vars['acfe:clauses']);
-
-        if (!is_array($customClauses)) {
+        $groupByClause = $query->get('acfe:groupby-clause');
+        if (!$groupByClause) {
             return $clauses;
         }
 
-        if (!empty($customClauses['meta_fields'])) {
+        $alias = collect($query->meta_query->get_clauses())
+            ->map(fn($clause) => $clause['alias'])
+            ->get($groupByClause->key);
 
-            /**
-             * Keyed by clause name (the array key in meta_query), not meta_key value.
-             * This is more robust when multiple clauses share the same meta_key.
-             * @var array<string, string> $clauseAliases
-             */
-            $clauseAliases = collect($query->meta_query->get_clauses())
-                ->map(fn($clause) => $clause['alias'])
-                ->all();
+        $clauses['fields'] = str_replace('{alias}', $alias, $groupByClause->expression);
+        $clauses['groupby'] = $groupByClause->groupby;
 
-            $customClauses['fields'] = collect($customClauses['meta_fields'])
-                ->map(function ($expr, $clauseName) use ($clauseAliases) {
-                    $alias = $clauseAliases[$clauseName] ?? throw new RuntimeException("No meta alias found for clause '$clauseName'");
-                    return str_replace('{alias}', $alias, $expr);
-                })
-                ->join(', ');
-
-            unset($customClauses['meta_fields']);
-        }
-
-        return collect($clauses)->replaceRecursive($customClauses)->all();
+        return $clauses;
     }
 
     /**
