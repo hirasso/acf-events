@@ -1,5 +1,11 @@
 # Changelog: `hirasso/festival-perspectives-events`
 
+## 1.0.1
+
+### Patch Changes
+
+- d964c3c: Optimize queries that are grouped by a meta field
+
 ## 1.0.0
 
 ### Major Changes
