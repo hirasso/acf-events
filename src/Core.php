@@ -47,7 +47,7 @@ final class Core
         add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
         add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
         add_filter('query_vars', [$this, 'query_vars']);
-        add_filter('posts_clauses', [$this, 'posts_clauses'], 1000, 2);
+        add_filter('posts_clauses', $this->posts_clauses(...), 1000, 2);
         add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
         add_filter('term_link', [$this, 'term_link'], 10, 2);
         add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
@@ -602,10 +602,16 @@ final class Core
     }
 
     /**
-     * Inject custom clauses
+     * Inject custom clauses for grouping posts by meta field
      */
     public function posts_clauses(array $clauses, WP_Query $query): array
     {
+        /**
+         * @var ?array{
+         *   meta_fields?: list<string>,
+         *   groupby: string
+         * } $customClauses
+         */
         $customClauses = $query->query_vars['acfe:clauses'] ?? null;
         unset($query->query_vars['acfe:clauses']);
 
@@ -614,11 +620,19 @@ final class Core
         }
 
         if (!empty($customClauses['meta_fields'])) {
+
+            /**
+             * @var array<string, string> $metaAliases
+             */
             $metaAliases = collect($query->meta_query->get_clauses())
-                ->mapWithKeys(fn($clause, $alias) => [$clause['key'] => $clause['alias']]);
+                ->mapWithKeys(fn($clause) => [$clause['key'] => $clause['alias']])
+                ->all();
 
             $customClauses['fields'] = collect($customClauses['meta_fields'])
-                ->map(fn($key) => $metaAliases->get($key) . '.meta_value as ' . $key)
+                ->map(function ($key) use ($metaAliases) {
+                    $alias = $metaAliases[$key] ?? throw new RuntimeException("No meta alias found for key '$key'");
+                    return "$alias.meta_value as $key";
+                })
                 ->join(', ');
 
             unset($customClauses['meta_fields']);
