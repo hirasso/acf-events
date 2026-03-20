@@ -41,15 +41,17 @@ final class Core
             return $this;
         }
 
+        // add_action('wp', fn() => dump($this->utils->getFormattedSql()));
+
         add_action('init', [$this, 'init_hook']);
         add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
         add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
         add_filter('query_vars', [$this, 'query_vars']);
-        add_filter('posts_clauses', [$this, 'posts_clauses'], 1000, 2);
         add_action('pre_get_posts', [$this, 'prepare_archive_main_query']);
         add_filter('term_link', [$this, 'term_link'], 10, 2);
         add_filter('relevanssi_hits_filter', [$this, 'relevanssi_hits_filter'], 10, 2);
         add_action('restrict_manage_posts', $this->renderYearFilter(...));
+        add_filter('posts_clauses', $this->applyGroupByClause(...), 1000, 2);
 
         return $this;
     }
@@ -332,14 +334,14 @@ final class Core
             return;
         }
 
-        /** restrict the year, both in the frontend as well as in the admin */
-        $this->restrictToYear($query, $this->getQueriedYear($query));
-
         if (!is_admin()) {
             $query->query_vars = collect($query->query_vars)
                 ->replaceRecursive($this->getArchiveArgs($query))
                 ->all();
         }
+
+        /** restrict the year, both in the frontend as well as in the admin */
+        $this->restrictToYear($query, $this->getQueriedYear($query));
     }
 
     /**
@@ -366,7 +368,7 @@ final class Core
      */
     public function getQueriedYear(?WP_Query $query): int
     {
-        $query ??= $this->utils->mainQuery();
+        $query ??= $this->utils->getMainQuery();
 
         return $this->utils->parseYear($query->get('acfe:year'))
             ?? $this->utils->parseYear($query->get('year'))
@@ -412,12 +414,11 @@ final class Core
                         ],
                     ],
                 },
-                'acfe:clauses' => [
-                    'fields' => collect([
-                        "DATE($wpdb->postmeta.meta_value) as day",
-                    ])->join(', '),
-                    'groupby' => 'day',
-                ],
+                'acfe:groupby-clause' => new GroupByMetaClause(
+                    key: EventFields::DATE_AND_TIME,
+                    groupby: 'day',
+                    expression: 'DATE({alias}.meta_value) as day',
+                ),
             ],
             // locations
             $groupby === 'location' => [
@@ -432,13 +433,7 @@ final class Core
                         'compare' => 'EXISTS',
                     ],
                 ],
-                'acfe:clauses' => [
-                    'fields' => collect([
-                        'mt1.meta_value as ' . EventFields::LOCATION_NAME,
-                        "$wpdb->postmeta.meta_value as " . EventFields::LOCATION_SORT_NAME,
-                    ])->join(', '),
-                    'groupby' => EventFields::LOCATION_SORT_NAME,
-                ],
+                'acfe:groupby-clause' => new GroupByMetaClause(EventFields::LOCATION_SORT_NAME),
             ],
             // filtered
             !$groupby && $query->is_tax() => [
@@ -527,7 +522,7 @@ final class Core
                      * DO NOT use EventFields::DATE_AND_TIME for the key here,
                      * otherwise sorting will break
                      */
-                    'date_between' => [
+                    'acfe:between-dates' => [
                         'key' => EventFields::DATE_AND_TIME,
                         'compare' => 'BETWEEN',
                         'value' => [$first, $last],
@@ -600,18 +595,26 @@ final class Core
     }
 
     /**
-     * Inject custom clauses
+     * Inject the custom GroupByMetaClause into WP posts clauses
      */
-    public function posts_clauses(array $clauses, WP_Query $query): array
+    public function applyGroupByClause(array $clauses, WP_Query $query): array
     {
-        $customClauses = $query->query_vars['acfe:clauses'] ?? null;
-        unset($query->query_vars['acfe:clauses']);
-
-        if (!is_array($customClauses)) {
+        /**
+         * @var ?GroupByMetaClause $groupByClause
+         */
+        $groupByClause = $query->get('acfe:groupby-clause');
+        if (!$groupByClause) {
             return $clauses;
         }
 
-        return collect($clauses)->replaceRecursive($customClauses)->all();
+        $alias = collect($query->meta_query->get_clauses())
+            ->map(fn($clause) => $clause['alias'])
+            ->get($groupByClause->key);
+
+        $clauses['fields'] = str_replace('{alias}', $alias, $groupByClause->expression);
+        $clauses['groupby'] = $groupByClause->groupby;
+
+        return $clauses;
     }
 
     /**

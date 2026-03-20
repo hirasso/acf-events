@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hirasso\WP\FPEvents;
 
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use InvalidArgumentException;
 use WP_Query;
 use wpdb;
 
@@ -37,7 +38,7 @@ final class Utils
     /**
      * Access the main WP_Query instance
      */
-    public function mainQuery(): WP_Query
+    public function getMainQuery(): WP_Query
     {
         global $wp_query;
         return $wp_query;
@@ -107,5 +108,36 @@ final class Utils
         }
 
         return null;
+    }
+
+    /**
+     * Get the raw SQL query from a WP_Query, formatted for readability
+     */
+    public function getFormattedSql(?WP_Query $query = null): string
+    {
+        $query ??= $this->getMainQuery();
+        $request = $query->request;
+
+        /** remove whitespace at the beginning of each line */
+        $request = preg_replace('/^\s+/m', '', $request);
+        /** remove duplicate whitespaces */
+        $request = preg_replace('/ +/m', ' ', $request);
+        /** make sure clauses start new lines */
+        $request = preg_replace('/(?<!^)\s(SELECT|FROM|AND|WHERE|INNER JOIN|LEFT JOIN|ORDER BY)\s/m', "\n$1 ", $request);
+        /** remove whitespace at the end of each line */
+        $request = preg_replace('/\s+$/m', '', $request);
+
+        return $request;
+    }
+
+    /**
+     * Parse a value, make sure it's a non-empty string
+     */
+    public function nonEmptyString(mixed $value): string
+    {
+        return match (true) {
+            is_string($value) && trim($value) !== "" => $value,
+            default => throw new InvalidArgumentException("Not a non-empty string: {$value}"),
+        };
     }
 }
