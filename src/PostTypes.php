@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal;
+namespace Hirasso\WP\FPEvents;
 
 /**
  * Make the custom post types available globally

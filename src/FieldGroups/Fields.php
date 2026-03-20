@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal\FieldGroups;
+namespace Hirasso\WP\FPEvents\FieldGroups;
 
 use Exception;
-use Hirasso\WP\FPEvents\Internal\Core;
+use Hirasso\WP\FPEvents\Core;
 
 /**
  * Global field names

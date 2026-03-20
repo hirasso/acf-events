@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal\FieldGroups;
+namespace Hirasso\WP\FPEvents\FieldGroups;
 
-use Hirasso\WP\FPEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\PostTypes;
 use WP_Post;
 
 /**

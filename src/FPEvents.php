@@ -9,13 +9,8 @@ declare(strict_types=1);
 
 namespace Hirasso\WP\FPEvents;
 
-use Hirasso\WP\FPEvents\Internal\Core;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\LocationFields;
-use Hirasso\WP\FPEvents\Internal\Locations;
-use Hirasso\WP\FPEvents\Internal\PolylangIntegration;
-use Hirasso\WP\FPEvents\Internal\Recurrences;
-use Hirasso\WP\FPEvents\Internal\Utils;
+use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\FieldGroups\LocationFields;
 use WP_Post;
 
 /**

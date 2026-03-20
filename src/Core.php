@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal;
+namespace Hirasso\WP\FPEvents;
 
 use DateTime;
 use DateTimeImmutable;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\FieldGroups\EventFields;
 use RuntimeException;
 use WP_Post;
 use WP_Query;

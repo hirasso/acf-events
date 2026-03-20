@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal;
+namespace Hirasso\WP\FPEvents;
 
 use InvalidArgumentException;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\LocationFields;
+use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\FieldGroups\LocationFields;
 use WP_Post;
 
 /**

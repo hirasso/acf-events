@@ -2,9 +2,9 @@
 
 namespace Hirasso\WP\FPEvents\Tests\Integration;
 
-use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\Fields;
-use Hirasso\WP\FPEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\FieldGroups\Fields;
+use Hirasso\WP\FPEvents\PostTypes;
 use Yoast\WPTestUtils\WPIntegration\TestCase;
 
 class BasicTest extends TestCase

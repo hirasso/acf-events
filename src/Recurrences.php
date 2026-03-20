@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\WP\FPEvents\Internal;
+namespace Hirasso\WP\FPEvents;
 
 use Exception;
 use WP_Post;
 use InvalidArgumentException;
 use RuntimeException;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
-use Hirasso\WP\FPEvents\Internal\FieldGroups\Fields;
+use Hirasso\WP\FPEvents\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\FieldGroups\Fields;
 
 /**
  * Automatically create event recurrences, based on an ACF repeater field containing dates
