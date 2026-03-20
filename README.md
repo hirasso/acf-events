@@ -16,10 +16,13 @@
 
 ## Screenshots
 
-![Frontend View](https://github.com/user-attachments/assets/b208c360-1ca9-404a-8cb7-b60046fe6120)
+### Frontend:
+![Frontend View](https://github.com/user-attachments/assets/fabb405e-fba0-4f4c-8c88-2093fbad2ba3)
 
+### Admin View: Event
 ![Admin View: Event](https://github.com/user-attachments/assets/6f0b3772-ea5c-4868-a54e-5229ec6704be)
 
+### Admin View: Location
 ![Admin View: Location](https://github.com/user-attachments/assets/d1b9cfa3-8fc4-4964-9286-58985555f618)
 
 ## Installation
