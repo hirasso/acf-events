@@ -1,9 +1,9 @@
 <?php
 
-use Hirasso\ACFEvents\ACFEvents;
+use Hirasso\FestivalPerspectivesEvents\FestivalPerspectivesEvents;
 
-/** @return ACFEvents */
+/** @return FestivalPerspectivesEvents */
 function acf_events()
 {
-    return ACFEvents::init();
+    return FestivalPerspectivesEvents::init();
 }

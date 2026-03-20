@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal\FieldGroups;
+namespace Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups;
 
-use Hirasso\ACFEvents\Internal\PostTypes;
+use Hirasso\FestivalPerspectivesEvents\Internal\PostTypes;
 
 /**
  * Global field names

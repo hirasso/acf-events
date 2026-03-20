@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\FestivalPerspectivesEvents\Internal;
 
 use DateTime;
 use DateTimeImmutable;
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
+use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
 use RuntimeException;
 use WP_Post;
 use WP_Query;

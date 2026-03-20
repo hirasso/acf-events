@@ -1,6 +1,6 @@
 <?php
 
-namespace Hirasso\ACFEvents\Tests\E2E;
+namespace Hirasso\FestivalPerspectivesEvents\Tests\E2E;
 
 use Exception;
 use Extended\ACF\Fields\Image;
@@ -9,8 +9,8 @@ use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\Textarea;
 use Extended\ACF\Fields\URL;
 use Extended\ACF\Location;
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
-use Hirasso\ACFEvents\Internal\PostTypes;
+use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
+use Hirasso\FestivalPerspectivesEvents\Internal\PostTypes;
 use WP_Post;
 
 /** Exit if accessed directly */

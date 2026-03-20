@@ -5,7 +5,7 @@
  * Description: Prepares the @wordpress/env environment for e2e tests
  */
 
-namespace Hirasso\ACFEvents\Tests\E2E;
+namespace Hirasso\FestivalPerspectivesEvents\Tests\E2E;
 
 /** Exit if accessed directly */
 if (!\defined('ABSPATH')) {

@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\FestivalPerspectivesEvents\Internal;
 
 use WP_Term;
 
 /**
- * Polylang integration for ACFEvents
+ * Polylang integration for FestivalPerspectivesEvents
  */
 final class PolylangIntegration
 {

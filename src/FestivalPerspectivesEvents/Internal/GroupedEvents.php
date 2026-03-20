@@ -5,7 +5,7 @@
  * https://rassohilber.com
  */
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\FestivalPerspectivesEvents\Internal;
 
 final class GroupedEvents
 {

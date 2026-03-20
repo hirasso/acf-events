@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\FestivalPerspectivesEvents\Internal;
 
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
+use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
 use WP_Query;
 use wpdb;
 
