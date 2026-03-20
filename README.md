@@ -2,7 +2,9 @@
 
 [![Test Status](https://img.shields.io/github/actions/workflow/status/hirasso/festival-perspectives-events/ci.yml?label=tests)](https://github.com/hirasso/festival-perspectives-events/actions/workflows/ci.yml)
 
-**📆 Open sourced code that powers the program on https://www.festival-perspectives.de/programm/. Based on WordPress + Advanced Custom Fields**
+**📆 Open sourced code that powers the program events and locations on the FESTIVAL PERSPECTIVES website. Based on WordPress + Advanced Custom Fields.**
+
+**https://www.festival-perspectives.de/programm/**
 
 ![CleanShot 2026-03-20 at 09 24 12@2x](https://github.com/user-attachments/assets/b208c360-1ca9-404a-8cb7-b60046fe6120)
 
