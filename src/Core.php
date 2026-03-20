@@ -41,6 +41,8 @@ final class Core
             return $this;
         }
 
+        // add_action('wp', fn() => $this->utils->getFormattedSql());
+
         add_action('init', [$this, 'init_hook']);
         add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
         add_filter('pll_get_post_types', [$this, 'pll_get_post_types'], 10, 2);
@@ -332,14 +334,14 @@ final class Core
             return;
         }
 
-        /** restrict the year, both in the frontend as well as in the admin */
-        $this->restrictToYear($query, $this->getQueriedYear($query));
-
         if (!is_admin()) {
             $query->query_vars = collect($query->query_vars)
                 ->replaceRecursive($this->getArchiveArgs($query))
                 ->all();
         }
+
+        /** restrict the year, both in the frontend as well as in the admin */
+        $this->restrictToYear($query, $this->getQueriedYear($query));
     }
 
     /**
@@ -366,7 +368,7 @@ final class Core
      */
     public function getQueriedYear(?WP_Query $query): int
     {
-        $query ??= $this->utils->mainQuery();
+        $query ??= $this->utils->getMainQuery();
 
         return $this->utils->parseYear($query->get('acfe:year'))
             ?? $this->utils->parseYear($query->get('year'))
@@ -527,7 +529,7 @@ final class Core
                      * DO NOT use EventFields::DATE_AND_TIME for the key here,
                      * otherwise sorting will break
                      */
-                    'date_between' => [
+                    'acfe:between-dates' => [
                         'key' => EventFields::DATE_AND_TIME,
                         'compare' => 'BETWEEN',
                         'value' => [$first, $last],
