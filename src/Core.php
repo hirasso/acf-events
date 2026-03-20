@@ -388,6 +388,7 @@ final class Core
             'posts_per_page' => 6,
             'ignore_sticky_posts' => true,
         ], match (true) {
+            // calendar
             $groupby === 'day' => [
                 'post_type' => [PostTypes::EVENT, PostTypes::RECURRENCE],
                 'orderby' => [EventFields::DATE_AND_TIME => 'asc'],
@@ -418,6 +419,7 @@ final class Core
                     'groupby' => 'day',
                 ],
             ],
+            // locations
             $groupby === 'location' => [
                 'orderby' => [EventFields::LOCATION_SORT_NAME => 'asc'],
                 'meta_query' => [
