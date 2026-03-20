@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 use DateTimeImmutable;
 

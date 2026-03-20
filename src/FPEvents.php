@@ -7,21 +7,21 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents;
+namespace Hirasso\WP\FPEvents;
 
-use Hirasso\ACFEvents\Internal\Core;
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
-use Hirasso\ACFEvents\Internal\FieldGroups\LocationFields;
-use Hirasso\ACFEvents\Internal\Locations;
-use Hirasso\ACFEvents\Internal\PolylangIntegration;
-use Hirasso\ACFEvents\Internal\Recurrences;
-use Hirasso\ACFEvents\Internal\Utils;
+use Hirasso\WP\FPEvents\Internal\Core;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\LocationFields;
+use Hirasso\WP\FPEvents\Internal\Locations;
+use Hirasso\WP\FPEvents\Internal\PolylangIntegration;
+use Hirasso\WP\FPEvents\Internal\Recurrences;
+use Hirasso\WP\FPEvents\Internal\Utils;
 use WP_Post;
 
 /**
  * Manage events, recurrences and locations using Advanced Custom Fields
  */
-final class ACFEvents
+final class FPEvents
 {
     public Core $core;
 

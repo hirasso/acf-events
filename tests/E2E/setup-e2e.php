@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Plugin Name: ACF Events Setup Plugin
- * Description: Prepares the @wordpress/env environment for e2e tests
+ * Plugin Name: FPEvents Setup Plugin
+ * Description: Initializes FPEvents in wp-env and creates content for e2e tests
  */
 
-namespace Hirasso\ACFEvents\Tests\E2E;
+namespace Hirasso\WP\FPEvents\Tests\E2E;
 
 /** Exit if accessed directly */
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-/** Load the composer autoloader from acf-events.php */
-require_once dirname(__DIR__) . '/acf-events/vendor/autoload.php';
+/** Load the composer autoloader from festival-perspectives-events.php */
+require_once dirname(__DIR__) . '/festival-perspectives-events/vendor/autoload.php';
 
 /**
  * Check what env we are currently in

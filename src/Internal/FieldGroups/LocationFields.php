@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal\FieldGroups;
+namespace Hirasso\WP\FPEvents\Internal\FieldGroups;
 
-use Hirasso\ACFEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\Internal\PostTypes;
 use WP_Post;
 
 /**

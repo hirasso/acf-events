@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: https://github.com/hirasso/acf-events/\n"
+"Report-Msgid-Bugs-To: https://github.com/hirasso/festival-perspectives-events/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -10,38 +10,38 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: acf-events\n"
+"X-Domain: festival-perspectives-events\n"
 
-#: src/ACFEvents/Internal/Core.php:630
+#: src/Internal/Core.php:630
 msgid "Minutes"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:675
+#: src/Internal/Core.php:675
 msgid "Today"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:676
+#: src/Internal/Core.php:676
 msgid "Yesterday"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:677
+#: src/Internal/Core.php:677
 msgid "Tomorrow"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:867
-#: src/ACFEvents/Internal/Core.php:871
+#: src/Internal/Core.php:867
+#: src/Internal/Core.php:871
 msgid "Location"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:868
+#: src/Internal/Core.php:868
 msgid "Dates"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:872
+#: src/Internal/Core.php:872
 msgid "Date"
 msgstr ""
 
-#: src/ACFEvents/Internal/Core.php:948
+#: src/Internal/Core.php:948
 #, php-format
 msgid "Year %s"
 msgstr ""

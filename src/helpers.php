@@ -1,9 +1,9 @@
 <?php
 
-use Hirasso\ACFEvents\ACFEvents;
+use Hirasso\WP\FPEvents\FPEvents;
 
-/** @return ACFEvents */
-function acf_events()
+/** @return FPEvents */
+function fp_events()
 {
-    return ACFEvents::init();
+    return FPEvents::init();
 }

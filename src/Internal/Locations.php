@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 use InvalidArgumentException;
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
-use Hirasso\ACFEvents\Internal\FieldGroups\LocationFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\LocationFields;
 use WP_Post;
 
 /**
@@ -150,7 +150,7 @@ final class Locations
     public function acf_pre_update_value(mixed $check, mixed $value, string|int $postID, array $field): mixed
     {
         if (collect([EventFields::LOCATION_NAME, EventFields::LOCATION_SORT_NAME])->contains($field['name'])) {
-            return 'Blocked update via ACF update_value(), as this field is managed by ACFEvents';
+            return 'Blocked update via ACF update_value(), as this field is managed by FPEvents';
         }
         return $check;
     }

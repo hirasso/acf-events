@@ -22,7 +22,7 @@ vendor
 *.log
 *.zip
 *.afphoto~lock~
-acf-events
+festival-perspectives-events
 
 # Testing tools and outputs
 /tests/**/reports/

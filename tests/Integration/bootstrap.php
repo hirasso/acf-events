@@ -7,7 +7,7 @@ $pluginsDir = \dirname(\dirname(\dirname(__DIR__)));
 \putenv('WP_PHPUNIT__TESTS_CONFIG=/wordpress-phpunit/wp-tests-config.php');
 
 /** Composer autoloader must be loaded before WP_PHPUNIT__DIR will be available */
-require_once "$pluginsDir/acf-events/vendor/autoload.php";
+require_once "$pluginsDir/festival-perspectives-events/vendor/autoload.php";
 
 /** Provide access to the function `tests_add_filter()` */
 require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
@@ -20,7 +20,7 @@ require_once \getenv('WP_PHPUNIT__DIR') . '/includes/functions.php';
 });
 
 /**
- * Register acf-events post types as Polylang-translatable before Polylang
+ * Register festival-perspectives-events post types as Polylang-translatable before Polylang
  * bootstraps. Polylang registers the `language` taxonomy for object types
  * during PLL_Model construction (on plugins_loaded). Without this filter,
  * `clean_object_term_cache` won't clear `language_relationships` cache for

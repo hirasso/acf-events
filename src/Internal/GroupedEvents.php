@@ -5,7 +5,7 @@
  * https://rassohilber.com
  */
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 final class GroupedEvents
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Hirasso\ACFEvents\Tests\Integration;
+namespace Hirasso\WP\FPEvents\Tests\Integration;
 
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
-use Hirasso\ACFEvents\Internal\FieldGroups\Fields;
-use Hirasso\ACFEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\Fields;
+use Hirasso\WP\FPEvents\Internal\PostTypes;
 use Yoast\WPTestUtils\WPIntegration\TestCase;
 
 class BasicTest extends TestCase
@@ -13,7 +13,7 @@ class BasicTest extends TestCase
     {
         parent::setUp();
         // $this->setupPolylangLanguages();
-        acf_events();
+        fp_events();
     }
 
     private function setupPolylangLanguages(): void
@@ -43,7 +43,7 @@ class BasicTest extends TestCase
 
     public function test_has_required_plugins(): void
     {
-        $this->assertTrue(function_exists('acf_events'));
+        $this->assertTrue(function_exists('fp_events'));
         $this->assertTrue(defined('ACF'));
         $this->assertTrue(defined('POLYLANG'));
     }
@@ -62,7 +62,7 @@ class BasicTest extends TestCase
          * Augment $_POST to test recurrency creation
          * The fact this needs to be hacked here points to a weakness in the
          * implementation. We should maybe look into update_post_meta or so.
-         * OR we could add a new API function acf_events()->addRecurrence($eventId, $dateAndTime)...
+         * OR we could add a new API function fp_events()->addRecurrence($eventId, $dateAndTime)...
          * not sure about this.
          */
         $_POST = [

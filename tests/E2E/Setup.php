@@ -1,6 +1,6 @@
 <?php
 
-namespace Hirasso\ACFEvents\Tests\E2E;
+namespace Hirasso\WP\FPEvents\Tests\E2E;
 
 use Exception;
 use Extended\ACF\Fields\Image;
@@ -9,8 +9,8 @@ use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\Textarea;
 use Extended\ACF\Fields\URL;
 use Extended\ACF\Location;
-use Hirasso\ACFEvents\Internal\FieldGroups\EventFields;
-use Hirasso\ACFEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\PostTypes;
 use WP_Post;
 
 /** Exit if accessed directly */
@@ -36,12 +36,12 @@ final class Setup
 
     public function __construct()
     {
-        if (!function_exists('acf_events')) {
+        if (!function_exists('fp_events')) {
             return;
         }
 
         /** initialize the library */
-        acf_events();
+        fp_events();
 
         /** we don't need the polylang wizard */
         delete_transient('pll_activation_redirect');

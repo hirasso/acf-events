@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\ACFEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 use WP_Term;
 
 /**
- * Polylang integration for ACFEvents
+ * Polylang integration for FPEvents
  */
 final class PolylangIntegration
 {
@@ -50,19 +50,19 @@ final class PolylangIntegration
             return;
         }
 
-        pll_register_string('acf-events', 'Minutes');
-        pll_register_string('acf-events', 'Program');
-        pll_register_string('acf-events', 'A-Z');
-        pll_register_string('acf-events', 'Calendar');
-        pll_register_string('acf-events', 'Places');
-        pll_register_string('acf-events', 'Yesterday');
-        pll_register_string('acf-events', 'Today');
-        pll_register_string('acf-events', 'Tomorrow');
-        pll_register_string('acf-events', 'Open in Maps');
-        pll_register_string('acf-events', 'Tickets');
-        pll_register_string('acf-events', 'Location');
-        pll_register_string('acf-events', 'Cast');
-        pll_register_string('acf-events', 'Production');
+        pll_register_string('festival-perspectives-events', 'Minutes');
+        pll_register_string('festival-perspectives-events', 'Program');
+        pll_register_string('festival-perspectives-events', 'A-Z');
+        pll_register_string('festival-perspectives-events', 'Calendar');
+        pll_register_string('festival-perspectives-events', 'Places');
+        pll_register_string('festival-perspectives-events', 'Yesterday');
+        pll_register_string('festival-perspectives-events', 'Today');
+        pll_register_string('festival-perspectives-events', 'Tomorrow');
+        pll_register_string('festival-perspectives-events', 'Open in Maps');
+        pll_register_string('festival-perspectives-events', 'Tickets');
+        pll_register_string('festival-perspectives-events', 'Location');
+        pll_register_string('festival-perspectives-events', 'Cast');
+        pll_register_string('festival-perspectives-events', 'Production');
     }
 
     /**
@@ -121,11 +121,11 @@ final class PolylangIntegration
     }
 
     /**
-     * Translate __('something', 'acf-events') using Polylang
+     * Translate __('something', 'festival-perspectives-events') using Polylang
      */
     public function translate_gettext(string $translated, string $original, string $domain): string
     {
-        if ($domain === 'acf-events' && $translated === $original) {
+        if ($domain === 'festival-perspectives-events' && $translated === $original) {
             return pll__($original);
         }
         return $translated;

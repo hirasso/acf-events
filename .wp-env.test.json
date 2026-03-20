@@ -11,7 +11,7 @@
     "./tests/E2E"
   ],
   "mappings": {
-    "wp-content/plugins/acf-events": ".",
+    "wp-content/plugins/festival-perspectives-events": ".",
     "wp-content/uploads": "./tests/uploads"
   },
   "config": {
