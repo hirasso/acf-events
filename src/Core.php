@@ -41,7 +41,7 @@ final class Core
             return $this;
         }
 
-        // add_action('wp', fn() => $this->utils->getFormattedSql());
+        // add_action('wp', fn() => dump($this->utils->getFormattedSql()));
 
         add_action('init', [$this, 'init_hook']);
         add_filter('relevanssi_post_title_before_tokenize', [$this, 'relevanssi_post_title_before_tokenize'], 10, 2);
@@ -435,10 +435,10 @@ final class Core
                     ],
                 ],
                 'acfe:clauses' => [
-                    'fields' => collect([
-                        'mt1.meta_value as ' . EventFields::LOCATION_NAME,
-                        "$wpdb->postmeta.meta_value as " . EventFields::LOCATION_SORT_NAME,
-                    ])->join(', '),
+                    'meta_fields' => [
+                        EventFields::LOCATION_NAME,
+                        EventFields::LOCATION_SORT_NAME,
+                    ],
                     'groupby' => EventFields::LOCATION_SORT_NAME,
                 ],
             ],
@@ -611,6 +611,17 @@ final class Core
 
         if (!is_array($customClauses)) {
             return $clauses;
+        }
+
+        if (!empty($customClauses['meta_fields'])) {
+            $metaAliases = collect($query->meta_query->get_clauses())
+                ->mapWithKeys(fn($clause, $alias) => [$clause['key'] => $clause['alias']]);
+
+            $customClauses['fields'] = collect($customClauses['meta_fields'])
+                ->map(fn($key) => $metaAliases->get($key) . '.meta_value as ' . $key)
+                ->join(', ');
+
+            unset($customClauses['meta_fields']);
         }
 
         return collect($clauses)->replaceRecursive($customClauses)->all();
