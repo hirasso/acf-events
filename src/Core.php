@@ -415,9 +415,9 @@ final class Core
                     ],
                 },
                 'acfe:clauses' => [
-                    'fields' => collect([
-                        "DATE($wpdb->postmeta.meta_value) as day",
-                    ])->join(', '),
+                    'meta_fields' => [
+                        EventFields::DATE_AND_TIME => 'DATE({alias}.meta_value) as day',
+                    ],
                     'groupby' => 'day',
                 ],
             ],
@@ -436,8 +436,8 @@ final class Core
                 ],
                 'acfe:clauses' => [
                     'meta_fields' => [
-                        EventFields::LOCATION_NAME,
-                        EventFields::LOCATION_SORT_NAME,
+                        EventFields::LOCATION_NAME => "{alias}.meta_value as " . EventFields::LOCATION_NAME,
+                        EventFields::LOCATION_SORT_NAME => "{alias}.meta_value as " . EventFields::LOCATION_SORT_NAME,
                     ],
                     'groupby' => EventFields::LOCATION_SORT_NAME,
                 ],
@@ -608,7 +608,7 @@ final class Core
     {
         /**
          * @var ?array{
-         *   meta_fields?: list<string>,
+         *   meta_fields?: list<string>|array<string, string>,
          *   groupby: string
          * } $customClauses
          */
@@ -622,16 +622,18 @@ final class Core
         if (!empty($customClauses['meta_fields'])) {
 
             /**
-             * @var array<string, string> $metaAliases
+             * Keyed by clause name (the array key in meta_query), not meta_key value.
+             * This is more robust when multiple clauses share the same meta_key.
+             * @var array<string, string> $clauseAliases
              */
-            $metaAliases = collect($query->meta_query->get_clauses())
-                ->mapWithKeys(fn($clause) => [$clause['key'] => $clause['alias']])
+            $clauseAliases = collect($query->meta_query->get_clauses())
+                ->map(fn($clause) => $clause['alias'])
                 ->all();
 
             $customClauses['fields'] = collect($customClauses['meta_fields'])
-                ->map(function ($key) use ($metaAliases) {
-                    $alias = $metaAliases[$key] ?? throw new RuntimeException("No meta alias found for key '$key'");
-                    return "$alias.meta_value as $key";
+                ->map(function ($expr, $clauseName) use ($clauseAliases) {
+                    $alias = $clauseAliases[$clauseName] ?? throw new RuntimeException("No meta alias found for clause '$clauseName'");
+                    return str_replace('{alias}', $alias, $expr);
                 })
                 ->join(', ');
 
