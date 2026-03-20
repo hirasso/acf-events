@@ -1,6 +1,5 @@
 # ACF Events
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/hirasso/festival-perspectives-events.svg)](https://packagist.org/packages/hirasso/festival-perspectives-events)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/hirasso/festival-perspectives-events/ci.yml?label=tests)](https://github.com/hirasso/festival-perspectives-events/actions/workflows/ci.yml)
 
 **📆 Open sourced code that powers the program on https://www.festival-perspectives.de/programm/. Based on WordPress + Advanced Custom Fields**
@@ -11,9 +10,12 @@
 
 ## Installation
 
-This is not a WordPress plugin. You need to install it via composer and boot manually.
+This is not a WordPress plugin. Install it via composer:
 
 ```shell
+# add the custom repository to the config:
+composer config repositories.festival-perspectives-events vcs https://github.com/hirasso/festival-perspectives-events
+# install it
 composer require hirasso/festival-perspectives-events
 ```
 
