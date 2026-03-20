@@ -14,9 +14,13 @@
 - Different views: A-Z, By Day, By Location
 - Auatomatic Recurrence management based on an ACF repeater "Further Dates"
 
-![CleanShot 2026-03-20 at 09 24 12@2x](https://github.com/user-attachments/assets/b208c360-1ca9-404a-8cb7-b60046fe6120)
+## Screenshots
 
-![CleanShot 2026-03-20 at 09 25 59@2x](https://github.com/user-attachments/assets/6f0b3772-ea5c-4868-a54e-5229ec6704be)
+![Frontend View](https://github.com/user-attachments/assets/b208c360-1ca9-404a-8cb7-b60046fe6120)
+
+![Admin View: Event](https://github.com/user-attachments/assets/6f0b3772-ea5c-4868-a54e-5229ec6704be)
+
+![Admin View: Location](https://github.com/user-attachments/assets/d1b9cfa3-8fc4-4964-9286-58985555f618)
 
 ## Installation
 
