@@ -336,7 +336,17 @@ final class Core
          * This runs in the admin as well as the frontend
          */
         $year = $this->getQueriedYear($query);
-        $query->set('year', $year);
+        $query->set('year', '');
+        $query->query_vars = array_replace_recursive($query->query_vars, [
+            'meta_query' => [
+                'acfe:year' => [
+                    'key'     => EventFields::DATE_AND_TIME,
+                    'value'   => [ "{$year}-01-01", "{$year}-12-31" ],
+                    'compare' => 'BETWEEN',
+                    'type'    => 'DATE',
+                ],
+            ],
+        ]);
 
         if (!is_admin()) {
             $query->query_vars = collect($query->query_vars)
@@ -352,13 +362,11 @@ final class Core
     {
         $query ??= $this->utils->mainQuery();
 
-        if ($this->utils->isYear($query->get('year'))) {
-            return (int) $query->get('year');
-        }
-        if ($this->utils->isYear($query->get('s'))) {
-            return (int) $query->get('s');
-        }
-        return (int) current_time('Y');
+        return (int) match (true) {
+            $this->utils->isYear($query->get('year')) => $query->get('year'),
+            $this->utils->isYear($query->get('s')) => $query->get('s'),
+            default => current_time('Y'),
+        };
     }
 
     /**
@@ -963,7 +971,6 @@ final class Core
      */
     public function isYearlyArchive(WP_Query $query): bool
     {
-
         if ($this->guessPostType($query) !== PostTypes::EVENT) {
             return false;
         }
