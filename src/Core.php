@@ -27,7 +27,7 @@ final class Core
     public const ISO_DATE_FORMAT = 'Y-m-d H:i:s';
     public const FILTER_TAXONOMY = 'acfe-event_filter';
 
-    public function __construct(private Utils $utils) {}
+    public function __construct(public Utils $utils) {}
 
     public static function init(Utils $utils)
     {
