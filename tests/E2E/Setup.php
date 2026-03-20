@@ -36,7 +36,7 @@ final class Setup
 
     public function __construct()
     {
-        if (!function_exists('acf_events')) {
+        if (!function_exists('fp_events')) {
             return;
         }
 
