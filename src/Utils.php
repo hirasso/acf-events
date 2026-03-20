@@ -91,22 +91,21 @@ final class Utils
     }
 
     /**
-     * Does an unknown variable look like a year?
+     * Parse an unknown variable as a year, returning the year as an integer if valid, otherwise null.
      */
-    public function isYear(mixed $var): bool
+    public function parseYear(mixed $var): ?int
     {
-        return
-            is_numeric($var)
-            && preg_match('/^\d{4}$/', trim((string) $var)) === 1
-            && (int) $var >= 1000
-            && (int) $var <= 9999;
-    }
+        $str = trim((string) $var);
 
-    /**
-     * Check if a value is the current year
-     */
-    public function isCurrentYear(int $value): bool
-    {
-        return $value === (int) current_time('Y');
+        if (
+            is_numeric($var)
+            && preg_match('/^\d{4}$/', $str) === 1
+            && (int) $str >= 1000
+            && (int) $str <= 9999
+        ) {
+            return (int) $str;
+        }
+
+        return null;
     }
 }

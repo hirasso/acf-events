@@ -348,6 +348,7 @@ final class Core
     private function restrictToYear(WP_Query $query, int $year): void
     {
         $query->set('year', '');
+        $query->set('acfe:year', $year);
         $query->query_vars = array_replace_recursive($query->query_vars, [
             'meta_query' => [
                 'acfe:year' => [
@@ -367,11 +368,10 @@ final class Core
     {
         $query ??= $this->utils->mainQuery();
 
-        return (int) match (true) {
-            $this->utils->isYear($query->get('year')) => $query->get('year'),
-            $this->utils->isYear($query->get('s')) => $query->get('s'),
-            default => current_time('Y'),
-        };
+        return $this->utils->parseYear($query->get('acfe:year'))
+            ?? $this->utils->parseYear($query->get('year'))
+            ?? $this->utils->parseYear($query->get('s'))
+            ?? (int) current_time('Y');
     }
 
     /**
@@ -391,14 +391,26 @@ final class Core
             $groupby === 'day' => [
                 'post_type' => [PostTypes::EVENT, PostTypes::RECURRENCE],
                 'orderby' => [EventFields::DATE_AND_TIME => 'asc'],
-                'meta_query' => [
-                    EventFields::DATE_AND_TIME => [
-                        'key' => EventFields::DATE_AND_TIME,
-                        'type' => 'DATETIME',
-                        'compare' => '>=',
-                        'value' => $this->getIsoDateTime('now'),
+                'meta_query' => match (true) {
+                    /**
+                     * in a yearly archive, we only need
+                     * the date and time for sorting
+                     */
+                    $this->isYearlyArchive($query) => [
+                        EventFields::DATE_AND_TIME => [
+                            'key' => EventFields::DATE_AND_TIME,
+                            'compare' => 'EXISTS',
+                        ],
                     ],
-                ],
+                    default => [
+                        EventFields::DATE_AND_TIME => [
+                            'key' => EventFields::DATE_AND_TIME,
+                            'type' => 'DATETIME',
+                            'compare' => '>=',
+                            'value' => $this->getIsoDateTime('now'),
+                        ],
+                    ],
+                },
                 'acfe:clauses' => [
                     'fields' => collect([
                         "DATE($wpdb->postmeta.meta_value) as day",
@@ -980,10 +992,6 @@ final class Core
             return false;
         }
 
-        if (!$year = $this->getQueriedYear($query)) {
-            return false;
-        }
-
-        return $year < (int) current_time('Y');
+        return $this->getQueriedYear($query) < (int) current_time('Y');
     }
 }
