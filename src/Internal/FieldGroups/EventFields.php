@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups;
+namespace Hirasso\WP\FPEvents\Internal\FieldGroups;
 
-use Hirasso\FestivalPerspectivesEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\Internal\PostTypes;
 
 /**
  * Global field names

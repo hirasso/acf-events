@@ -1,6 +1,5 @@
 {
   "name": "hirasso/festival-perspectives-events",
-  "description": "A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -18,8 +17,8 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Hirasso\\FestivalPerspectivesEvents\\": [
-        "src/FestivalPerspectivesEvents"
+      "Hirasso\\WP\\FPEvents\\": [
+        "src"
       ]
     },
     "files": [
@@ -28,7 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Hirasso\\FestivalPerspectivesEvents\\Tests\\": "tests"
+      "Hirasso\\WP\\FPEvents\\Tests\\": "tests"
     }
   },
   "scripts": {

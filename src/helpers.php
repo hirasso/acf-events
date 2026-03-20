@@ -1,9 +1,9 @@
 <?php
 
-use Hirasso\FestivalPerspectivesEvents\FestivalPerspectivesEvents;
+use Hirasso\WP\FPEvents\FPEvents;
 
-/** @return FestivalPerspectivesEvents */
+/** @return FPEvents */
 function fp_events()
 {
-    return FestivalPerspectivesEvents::init();
+    return FPEvents::init();
 }

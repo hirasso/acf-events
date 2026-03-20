@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\FestivalPerspectivesEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 use WP_Term;
 
 /**
- * Polylang integration for FestivalPerspectivesEvents
+ * Polylang integration for FPEvents
  */
 final class PolylangIntegration
 {

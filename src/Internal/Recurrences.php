@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\FestivalPerspectivesEvents\Internal;
+namespace Hirasso\WP\FPEvents\Internal;
 
 use Exception;
 use WP_Post;
 use InvalidArgumentException;
 use RuntimeException;
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\Fields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\Fields;
 
 /**
  * Automatically create event recurrences, based on an ACF repeater field containing dates

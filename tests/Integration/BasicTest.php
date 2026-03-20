@@ -1,10 +1,10 @@
 <?php
 
-namespace Hirasso\FestivalPerspectivesEvents\Tests\Integration;
+namespace Hirasso\WP\FPEvents\Tests\Integration;
 
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\Fields;
-use Hirasso\FestivalPerspectivesEvents\Internal\PostTypes;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\Fields;
+use Hirasso\WP\FPEvents\Internal\PostTypes;
 use Yoast\WPTestUtils\WPIntegration\TestCase;
 
 class BasicTest extends TestCase

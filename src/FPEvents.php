@@ -7,21 +7,21 @@
 
 declare(strict_types=1);
 
-namespace Hirasso\FestivalPerspectivesEvents;
+namespace Hirasso\WP\FPEvents;
 
-use Hirasso\FestivalPerspectivesEvents\Internal\Core;
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\EventFields;
-use Hirasso\FestivalPerspectivesEvents\Internal\FieldGroups\LocationFields;
-use Hirasso\FestivalPerspectivesEvents\Internal\Locations;
-use Hirasso\FestivalPerspectivesEvents\Internal\PolylangIntegration;
-use Hirasso\FestivalPerspectivesEvents\Internal\Recurrences;
-use Hirasso\FestivalPerspectivesEvents\Internal\Utils;
+use Hirasso\WP\FPEvents\Internal\Core;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\EventFields;
+use Hirasso\WP\FPEvents\Internal\FieldGroups\LocationFields;
+use Hirasso\WP\FPEvents\Internal\Locations;
+use Hirasso\WP\FPEvents\Internal\PolylangIntegration;
+use Hirasso\WP\FPEvents\Internal\Recurrences;
+use Hirasso\WP\FPEvents\Internal\Utils;
 use WP_Post;
 
 /**
  * Manage events, recurrences and locations using Advanced Custom Fields
  */
-final class FestivalPerspectivesEvents
+final class FPEvents
 {
     public Core $core;
 

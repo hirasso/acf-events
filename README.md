@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/hirasso/festival-perspectives-events.svg)](https://packagist.org/packages/hirasso/festival-perspectives-events)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/hirasso/festival-perspectives-events/ci.yml?label=tests)](https://github.com/hirasso/festival-perspectives-events/actions/workflows/ci.yml)
 
-**A Composer library to manage events, recurrences and locations using WordPress + Advanced Custom Fields 📆**
+**📆 Open sourced code that powers the program on https://www.festival-perspectives.de/programm/. Based on WordPress + Advanced Custom Fields**
 
 ## Installation
 
