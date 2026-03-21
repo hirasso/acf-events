@@ -4,7 +4,7 @@
   "core": "./vendor/.wp/core",
   "themes": ["./vendor/.wp/themes/twentytwentyfive"],
   "plugins": [
-    "./vendor/.wp/plugins/advanced-custom-fields",
+    "./vendor/.wp/plugins/advanced-custom-fields-pro",
     "./vendor/.wp/plugins/classic-editor",
     "./vendor/.wp/plugins/polylang"
   ],
