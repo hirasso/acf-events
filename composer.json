@@ -51,7 +51,8 @@
         "type:wordpress-muplugin"
       ],
       "vendor/.wp/plugins/{$name}/": [
-        "type:wordpress-plugin"
+        "type:wordpress-plugin",
+        "pronamic/advanced-custom-fields-pro"
       ],
       "vendor/.wp/themes/{$name}/": [
         "type:wordpress-theme"
@@ -59,28 +60,42 @@
     },
     "wordpress-install-dir": "vendor/.wp/core"
   },
-  "repositories": {
-    "wp-composer": {
+  "repositories": [
+    {
+      "name": "wp-composer",
       "type": "composer",
       "url": "https://repo.wp-composer.com",
       "only": [
         "wp-plugin/*",
         "wp-theme/*"
       ]
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "pronamic/advanced-custom-fields-pro",
+        "version": "dev-main",
+        "type": "wordpress-plugin",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/pronamic/advanced-custom-fields-pro",
+          "reference": "main"
+        }
+      }
     }
-  },
+  ],
   "require-dev": {
     "laravel/pint": "^1.27",
     "pestphp/pest": "^1.23",
     "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.1",
+    "pronamic/advanced-custom-fields-pro": "dev-main",
     "roots/wordpress": "^6.9",
     "symfony/var-dumper": "^7.4",
     "szepeviktor/phpstan-wordpress": "^2.0",
     "vinkla/extended-acf": "^14.6",
     "wp-cli/wp-cli": "^2.12",
     "wp-phpunit/wp-phpunit": "^6.9",
-    "wp-plugin/advanced-custom-fields": "^6.7",
     "wp-plugin/classic-editor": "^1.6",
     "wp-plugin/polylang": "^3.7",
     "wp-theme/twentytwentyfive": "^1.4",

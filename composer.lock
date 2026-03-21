@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ab68d07424437cded6a52371d0c3b55",
+    "content-hash": "038d47c86bb1ee947d35a31887dba969",
     "packages": [
         {
             "name": "hirasso/attr",
@@ -2285,6 +2285,16 @@
                 }
             ],
             "time": "2026-01-27T05:45:00+00:00"
+        },
+        {
+            "name": "pronamic/advanced-custom-fields-pro",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pronamic/advanced-custom-fields-pro",
+                "reference": "main"
+            },
+            "type": "wordpress-plugin"
         },
         {
             "name": "psr/log",
@@ -4821,37 +4831,6 @@
             "time": "2026-02-04T01:48:23+00:00"
         },
         {
-            "name": "wp-plugin/advanced-custom-fields",
-            "version": "6.7.1",
-            "source": {
-                "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/advanced-custom-fields/",
-                "reference": "tags/6.7.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/advanced-custom-fields.6.7.1.zip"
-            },
-            "require": {
-                "composer/installers": "~1.0|~2.0"
-            },
-            "type": "wordpress-plugin",
-            "notification-url": "https://wp-packages.org/downloads",
-            "authors": [
-                {
-                    "name": "WP Engine"
-                }
-            ],
-            "description": "ACF helps customize WordPress with powerful, professional and intuitive fields. Proudly powering over 2 million sites, WordPress developers love ACF.",
-            "homepage": "https://www.advancedcustomfields.com",
-            "support": {
-                "changelog": "https://wordpress.org/plugins/advanced-custom-fields/#developers",
-                "issues": "https://wordpress.org/support/plugin/advanced-custom-fields",
-                "source": "https://plugins.svn.wordpress.org/advanced-custom-fields"
-            },
-            "time": "2026-03-03T18:16:00+00:00"
-        },
-        {
             "name": "wp-plugin/classic-editor",
             "version": "1.6.7",
             "source": {
@@ -5077,7 +5056,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "pronamic/advanced-custom-fields-pro": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
