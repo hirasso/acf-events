@@ -212,7 +212,7 @@ final class Recurrences
         return collect($rawFurtherDates)
             ->pluck($this->subFieldKey)
             ->filter()
-            ->map(fn($date) => $this->core->getIsoDateTime($date))
+            ->map(fn($date) => $this->core->getIsoDateTimeString($date))
             ->map(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime))
             ->all();
     }

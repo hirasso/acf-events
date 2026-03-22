@@ -84,7 +84,7 @@ final class Core
     /**
      * Get the current date time in the required format and time zone
      */
-    public function getIsoDateTime(string $dateString)
+    public function getIsoDateTimeString(string $dateString)
     {
         return $this->getDateTime($dateString)->format(self::ISO_DATE_FORMAT);
     }
@@ -410,7 +410,7 @@ final class Core
                             'key' => EventFields::DATE_AND_TIME,
                             'type' => 'DATETIME',
                             'compare' => '>=',
-                            'value' => $this->getIsoDateTime('now'),
+                            'value' => $this->getIsoDateTimeString('now'),
                         ],
                     ],
                 },
@@ -1001,5 +1001,21 @@ final class Core
         }
 
         return $this->getQueriedYear($query) < (int) current_time('Y');
+    }
+
+    /**
+     * Check if a post is an event and in the past
+     */
+    public function isEventInThePast(int|WP_Post $post): bool
+    {
+        if (get_post_type($post) !== PostTypes::EVENT) {
+            return false;
+        }
+
+        $eventDates = $this->getEventDates($post);
+        $now = new DateTimeImmutable('now');
+
+        return !collect($eventDates)
+            ->some(fn($eventDate) => $eventDate->date > $now);
     }
 }
