@@ -10,24 +10,24 @@ use InvalidArgumentException;
 use RuntimeException;
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
 use Hirasso\WP\FPEvents\FieldGroups\Fields;
+use WP_CLI;
 
 /**
  * Automatically create event recurrences, based on an ACF repeater field containing dates
  */
 final class Recurrences
 {
-    private static ?self $instance = null;
+    private string $fieldKey;
+    private string $subFieldKey;
+    private string $postType;
+    private string $recurrencePostType;
 
+    private static ?self $instance = null;
     public static function init(Core $core)
     {
         self::$instance ??= new self($core);
         return self::$instance;
     }
-
-    private string $fieldKey;
-    private string $subFieldKey;
-    private string $postType;
-    private string $recurrencePostType;
 
     private function __construct(private Core $core)
     {
@@ -35,6 +35,10 @@ final class Recurrences
         $this->subFieldKey = Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME);
         $this->postType = PostTypes::EVENT;
         $this->recurrencePostType = PostTypes::RECURRENCE;
+
+        if ($core->utils->isWpCli()) {
+            WP_CLI::add_command('events recurrences:create', $this->createRecurrencesCommand(...));
+        }
     }
 
     public function addHooks(): self
@@ -44,7 +48,7 @@ final class Recurrences
         }
 
         add_action('init', [$this, 'init_hook']);
-        add_action('save_post', [$this, 'save_post'], 20);
+        add_action('save_post', $this->save_post(...), 20);
         add_action('trashed_post', [$this, 'deleteRecurrences']);
         add_action('before_delete_post', [$this, 'deleteRecurrences']);
         add_filter('display_post_states', [$this, 'display_post_states'], 10, 2);
@@ -86,12 +90,12 @@ final class Recurrences
         }
 
         $recurrences = $this->createRecurrences($postID);
-
         $this->createPolylangTranslations($postID, $recurrences);
     }
 
     /**
-     * Create Polylang translations for all recurrences
+     * Create recurrences for Polylang translations of an event
+     *
      * @param list<int> $recurrences
      */
     private function createPolylangTranslations(int $postID, array $recurrences): void
@@ -142,7 +146,7 @@ final class Recurrences
     }
 
     /**
-     * Delete all clones from a post
+     * Delete all recurrences from a post
      */
     public function deleteRecurrences(int $postID): void
     {
@@ -179,10 +183,12 @@ final class Recurrences
     }
 
     /**
-     * Create clones from an original event
+     * Create recurrences from an original event, based on
+     * the subfields of the ACF field 'further_dates'
+     *
      * @return list<int>
      */
-    private function createRecurrences($postID): array
+    public function createRecurrences(int $postID): array
     {
         /** Double-check if this is an original event */
         if (!$this->core->isOriginalEvent($postID)) {
@@ -213,7 +219,9 @@ final class Recurrences
             ->pluck($this->subFieldKey)
             ->filter()
             ->map(fn($date) => $this->core->getIsoDateTimeString($date))
+            ->filter(fn($date) => !$this->core->isDateInThePast($date))
             ->map(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime))
+            ->values()
             ->all();
     }
 
@@ -339,5 +347,33 @@ final class Recurrences
         }
 
         return $valid;
+    }
+
+    /**
+     * Create recurrences from an event
+     *
+     * ## OPTIONS
+     *
+     * <post-id>...
+     * : One or more event post IDs to create recurrences for.
+     *
+     * ## EXAMPLES
+     *
+     *     wp events recurrences:create 423 857 920
+     *
+     * @param list<string> $args
+     *
+     * @throws RuntimeException
+     */
+    private function createRecurrencesCommand(array $args): void
+    {
+        $postIDs = collect($args);
+
+        if ($invalid = $postIDs->first(fn($id) => !$this->core->isOriginalEvent($id))) {
+            WP_CLI::error("Not a valid event post ID: '{$invalid}'");
+        }
+
+        /** The save_post hook does all we need */
+        $postIDs->each(fn($id) => $this->save_post((int) $id));
     }
 }

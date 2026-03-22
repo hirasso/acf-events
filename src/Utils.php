@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hirasso\WP\FPEvents;
 
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
-use InvalidArgumentException;
 use WP_Query;
 use wpdb;
 
@@ -125,13 +124,10 @@ final class Utils
     }
 
     /**
-     * Parse a value, make sure it's a non-empty string
+     * Currently running WP CLI?
      */
-    public function nonEmptyString(mixed $value): string
+    public function isWpCli(): bool
     {
-        return match (true) {
-            is_string($value) && trim($value) !== "" => $value,
-            default => throw new InvalidArgumentException("Not a non-empty string: {$value}"),
-        };
+        return defined('WP_CLI') && WP_CLI; // @phpstan-ignore booleanAnd.rightAlwaysTrue
     }
 }

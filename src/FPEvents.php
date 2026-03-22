@@ -23,12 +23,13 @@ final class FPEvents
 
         $utils = Utils::init();
         $core = Core::init($utils)->addHooks();
+        self::$instance->core = $core;
+
         Locations::init($core)->addHooks();
         Recurrences::init($core)->addHooks();
         EventFields::init($core)->addHooks();
         LocationFields::init($core)->addHooks();
         PolylangIntegration::init()->addHooks();
-        self::$instance->core = $core;
 
         return self::$instance;
     }

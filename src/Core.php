@@ -1018,4 +1018,12 @@ final class Core
         return !collect($eventDates)
             ->some(fn($eventDate) => $eventDate->date > $now);
     }
+
+    /**
+     * Check if a date is in the past
+     */
+    public function isDateInThePast(string $date): bool
+    {
+        return new DateTimeImmutable($date) < new DateTimeImmutable('now');
+    }
 }
