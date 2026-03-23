@@ -49,7 +49,7 @@ class BasicTest extends TestCase
         $this->assertTrue(defined('POLYLANG'));
     }
 
-    public function test_creates_recurrence(): void
+    public function test_creates_recurrences(): void
     {
         $location = $this->factory()->post->create_and_get([
             'post_type' => PostTypes::LOCATION,
@@ -69,9 +69,9 @@ class BasicTest extends TestCase
         $_POST = [
             'acf' => [
                 Fields::key(EventFields::FURTHER_DATES) => [
-                    "row-0" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-09 19:00:00"],
-                    "row-1" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-12 18:00:00"],
-                    "row-2" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => "2025-06-12 19:00:00"],
+                    "row-0" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('+30 days 19:00:00'))],
+                    "row-1" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('+60 days 18:00:00'))],
+                    "row-2" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('+60 days 19:00:00'))],
                 ],
             ],
         ];
