@@ -41,7 +41,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: src/Core.php:967
+#: src/Core.php:966
 #, php-format
 msgid "Year %s"
 msgstr ""

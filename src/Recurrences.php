@@ -217,7 +217,7 @@ final class Recurrences
          */
         return collect($rawFurtherDates)
             ->pluck($this->subFieldKey)
-            ->filter(fn(string $date) => $this->core->isInThePast($date))
+            ->filter(fn(string $date) => !$this->core->isInThePast($date))
             ->map(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime))
             ->values()
             ->all();

@@ -145,7 +145,7 @@ final class Core
     }
 
     /**
-     * Get all dates from an Event
+     * Get all dates from an Event. Excludes recurrences in the past via filter
      * @return EventDate[]
      */
     public function getEventDates(int|WP_Post $_post): array
@@ -912,9 +912,8 @@ final class Core
                 echo
                     collect($this->getEventDates($postID))
                         ->map(function (EventDate $date) {
-                            $text = $date->toFormattedString();
                             $url = get_permalink($date->postID);
-                            return "<a href='$url' target='_blank'>$text</a>";
+                            return "<a href='$url' target='_blank'>$date</a>";
                         })
                         ->join('<br>')
                 ;
@@ -999,7 +998,7 @@ final class Core
         }
 
         return collect($this->getEventDates($post))
-            ->every(fn($eventDate) => $this->isInThePast($eventDate->date));
+            ->every(fn($eventDate) => $this->isInThePast($eventDate->toMySQLString()));
     }
 
     /**
@@ -1010,12 +1009,8 @@ final class Core
      * compare them to "now", we must express "now" in the same naive Berlin format
      * rather than doing any timezone conversion.
      */
-    public function isInThePast(string|DateTimeImmutable $date): bool
+    public function isInThePast(string $date): bool
     {
-        if ($date instanceof DateTimeImmutable) {
-            $date = $date->format(self::MYSQL_DATE_TIME_FORMAT);
-        }
-
         return $date < current_time(self::MYSQL_DATE_TIME_FORMAT);
     }
 }

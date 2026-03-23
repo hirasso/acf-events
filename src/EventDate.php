@@ -17,7 +17,7 @@ final readonly class EventDate
      * @param int $postID The post ID (may point to an acfe-event or acfe-recurrence)
      */
     public function __construct(
-        public DateTimeImmutable $date,
+        private DateTimeImmutable $date,
         public int $postID,
     ) {
         $this->isCurrent = $this->isCurrent();
@@ -34,12 +34,17 @@ final readonly class EventDate
         return $this->postID === get_queried_object_id();
     }
 
-    public function toW3C(): string
+    public function toW3CString(): string
     {
         return $this->date->format(DATE_W3C);
     }
 
-    public function toFormattedString()
+    public function toMySQLString(): string
+    {
+        return $this->date->format(Core::MYSQL_DATE_TIME_FORMAT);
+    }
+
+    public function __toString()
     {
         $format = collect([
             get_option('date_format', ''),
@@ -50,4 +55,5 @@ final readonly class EventDate
 
         return date_i18n($format, $this->date->getTimestamp());
     }
+
 }
