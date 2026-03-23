@@ -6,6 +6,7 @@ use Hirasso\WP\FPEvents\Core;
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
 use Hirasso\WP\FPEvents\FieldGroups\Fields;
 use Hirasso\WP\FPEvents\PostTypes;
+use WP_Post;
 use Yoast\WPTestUtils\WPIntegration\TestCase;
 
 class BasicTest extends TestCase
@@ -42,14 +43,7 @@ class BasicTest extends TestCase
         ]);
     }
 
-    public function test_has_required_plugins(): void
-    {
-        $this->assertTrue(function_exists('fp_events'));
-        $this->assertTrue(defined('ACF'));
-        $this->assertTrue(defined('POLYLANG'));
-    }
-
-    public function test_creates_recurrences(): void
+    private function createEvent(): WP_Post
     {
         $location = $this->factory()->post->create_and_get([
             'post_type' => PostTypes::LOCATION,
@@ -59,6 +53,34 @@ class BasicTest extends TestCase
             ],
         ]);
 
+        return $this->factory()->post->create_and_get([
+            'post_type' => PostTypes::EVENT,
+            'tax_input' => ['language' => 'en'], // no effect currently
+            'meta_input' => [
+                EventFields::DATE_AND_TIME => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('next saturday 10:00')),
+                EventFields::LOCATION_ID => $location->ID,
+            ],
+        ]);
+    }
+
+    private function getRecurrences(): array
+    {
+        return get_posts([
+            'post_type' => PostTypes::RECURRENCE,
+            'post_status' => 'any',
+            'posts_per_page' => -1,
+        ]);
+    }
+
+    public function test_has_required_plugins(): void
+    {
+        $this->assertTrue(function_exists('fp_events'));
+        $this->assertTrue(defined('ACF'));
+        $this->assertTrue(defined('POLYLANG'));
+    }
+
+    public function test_creates_recurrences(): void
+    {
         /**
          * Augment $_POST to test recurrency creation
          * The fact this needs to be hacked here points to a weakness in the
@@ -76,20 +98,8 @@ class BasicTest extends TestCase
             ],
         ];
 
-        $event = $this->factory()->post->create_and_get([
-            'post_type' => PostTypes::EVENT,
-            'tax_input' => ['language' => 'en'], // no effect currently
-            'meta_input' => [
-                EventFields::DATE_AND_TIME => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('next saturday 10:00')),
-                EventFields::LOCATION_ID => $location->ID,
-            ],
-        ]);
-
-        $recurrences = get_posts([
-            'post_type' => PostTypes::RECURRENCE,
-            'post_status' => 'any',
-            'posts_per_page' => -1,
-        ]);
+        $event = $this->createEvent();
+        $recurrences = $this->getRecurrences();
 
         $this->assertSame(count($recurrences), 3);
 
@@ -103,5 +113,26 @@ class BasicTest extends TestCase
             $dateAndTime = get_post_meta($p->ID, EventFields::DATE_AND_TIME, true);
             $this->assertSame($dateAndTime, $furtherDates[$index]);
         }
+    }
+
+    public function test_does_not_create_recurrences_for_events_in_the_past(): void
+    {
+        $_POST = [
+            'acf' => [
+                Fields::key(EventFields::FURTHER_DATES) => [
+                    /** yesterday: */
+                    "row-0" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('yesterday'))],
+                    /** in the future: */
+                    "row-1" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('+60 days 18:00:00'))],
+                    "row-2" => [Fields::key(EventFields::FURTHER_DATES_DATE_AND_TIME) => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('+60 days 19:00:00'))],
+                ],
+            ],
+        ];
+
+        $event = $this->createEvent();
+
+        $recurrences = $this->getRecurrences();
+
+        $this->assertSame(count($recurrences), 2);
     }
 }
