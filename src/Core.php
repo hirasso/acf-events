@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hirasso\WP\FPEvents;
 
-use DateTime;
 use DateTimeImmutable;
 use Exception;
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
@@ -20,7 +19,7 @@ final class Core
 {
     private static ?self $instance = null;
 
-    public const ISO_DATE_FORMAT = 'Y-m-d H:i:s';
+    public const MYSQL_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
     public const FILTER_TAXONOMY = 'acfe-event_filter';
 
     public function __construct(public Utils $utils) {}
@@ -82,25 +81,9 @@ final class Core
     }
 
     /**
-     * Get the current date time in the required format and time zone
-     */
-    public function getIsoDateTimeString(string $dateString)
-    {
-        return $this->getDateTime($dateString)->format(self::ISO_DATE_FORMAT);
-    }
-
-    /**
-     * Get a DateTime in the local timezone
-     */
-    public function getDateTime(string $dateString = 'now'): DateTimeImmutable
-    {
-        return new DateTimeImmutable(datetime: $dateString, timezone: wp_timezone());
-    }
-
-    /**
      * Validate that a provided date string conforms to an expected format
      */
-    public function isValidDateFormat(string $dateString, string $expectedFormat = self::ISO_DATE_FORMAT): bool
+    public function parseDateInFormat(string $dateString, string $expectedFormat = self::MYSQL_DATE_TIME_FORMAT): bool
     {
         $datetime = \DateTime::createFromFormat($expectedFormat, $dateString);
         return $datetime && $datetime->format($expectedFormat) === $dateString;
@@ -184,7 +167,10 @@ final class Core
             ->map(fn($_, $postID) => get_field(EventFields::DATE_AND_TIME, $postID, false))
             ->filter($this->isFilledString(...))
             ->sort()
-            ->map(fn($date, $postID) => new EventDate($date, $postID))
+            ->map(fn($dateString, $postID) => new EventDate(
+                new DateTimeImmutable($dateString),
+                $postID,
+            ))
             ->all();
     }
 
@@ -410,7 +396,7 @@ final class Core
                             'key' => EventFields::DATE_AND_TIME,
                             'type' => 'DATETIME',
                             'compare' => '>=',
-                            'value' => $this->getIsoDateTimeString('now'),
+                            'value' => current_time(self::MYSQL_DATE_TIME_FORMAT),
                         ],
                     ],
                 },
@@ -702,12 +688,12 @@ final class Core
             $date = new DateTimeImmutable($date);
         }
 
-        $today = new DateTimeImmutable(current_time('mysql'));
+        $now = current_datetime();
 
         $relativeDay = match (true) {
-            $this->isSameDay($date, $today) => __('Today', 'festival-perspectives-events'),
-            $this->isSameDay($date, $today->modify('- 1 day')) => __('Yesterday', 'festival-perspectives-events'),
-            $this->isSameDay($date, $today->modify('+ 1 day')) => __('Tomorrow', 'festival-perspectives-events'),
+            $this->isSameDay($date, $now) => __('Today', 'festival-perspectives-events'),
+            $this->isSameDay($date, $now->modify('- 1 day')) => __('Yesterday', 'festival-perspectives-events'),
+            $this->isSameDay($date, $now->modify('+ 1 day')) => __('Tomorrow', 'festival-perspectives-events'),
             default => null,
         };
 
@@ -1004,7 +990,7 @@ final class Core
     }
 
     /**
-     * Check if a post is an event and in the past
+     * Check if all dates of an event are in the past
      */
     public function isEventInThePast(int|WP_Post $post): bool
     {
@@ -1012,18 +998,24 @@ final class Core
             return false;
         }
 
-        $eventDates = $this->getEventDates($post);
-        $now = new DateTimeImmutable('now');
-
-        return !collect($eventDates)
-            ->some(fn($eventDate) => $eventDate->date > $now);
+        return collect($this->getEventDates($post))
+            ->every(fn($eventDate) => $this->isInThePast($eventDate->date));
     }
 
     /**
-     * Check if a date is in the past
+     * Check if a given date is in the past.
+     *
+     * Dates from ACF are stored as naive strings in the Europe/Berlin timezone
+     * (e.g. "2026-06-14 12:00:00") with no timezone info attached. To correctly
+     * compare them to "now", we must express "now" in the same naive Berlin format
+     * rather than doing any timezone conversion.
      */
-    public function isDateInThePast(string $date): bool
+    public function isInThePast(string|DateTimeImmutable $date): bool
     {
-        return new DateTimeImmutable($date) < new DateTimeImmutable('now');
+        if ($date instanceof DateTimeImmutable) {
+            $date = $date->format(self::MYSQL_DATE_TIME_FORMAT);
+        }
+
+        return $date < current_time(self::MYSQL_DATE_TIME_FORMAT);
     }
 }

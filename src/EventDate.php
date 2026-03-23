@@ -11,18 +11,15 @@ use DateTimeImmutable;
  */
 final readonly class EventDate
 {
-    public DateTimeImmutable $date;
     public bool $isCurrent;
 
     /**
-     * @param string $dateString The date string
      * @param int $postID The post ID (may point to an acfe-event or acfe-recurrence)
      */
     public function __construct(
-        string $dateString,
+        public DateTimeImmutable $date,
         public int $postID,
     ) {
-        $this->date = new DateTimeImmutable($dateString);
         $this->isCurrent = $this->isCurrent();
     }
 

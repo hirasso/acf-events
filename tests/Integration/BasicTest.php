@@ -2,6 +2,7 @@
 
 namespace Hirasso\WP\FPEvents\Tests\Integration;
 
+use Hirasso\WP\FPEvents\Core;
 use Hirasso\WP\FPEvents\FieldGroups\EventFields;
 use Hirasso\WP\FPEvents\FieldGroups\Fields;
 use Hirasso\WP\FPEvents\PostTypes;
@@ -79,7 +80,7 @@ class BasicTest extends TestCase
             'post_type' => PostTypes::EVENT,
             'tax_input' => ['language' => 'en'], // no effect currently
             'meta_input' => [
-                EventFields::DATE_AND_TIME => \date('Y-m-d H:i:s', \strtotime('next saturday 10:00')),
+                EventFields::DATE_AND_TIME => \date(Core::MYSQL_DATE_TIME_FORMAT, \strtotime('next saturday 10:00')),
                 EventFields::LOCATION_ID => $location->ID,
             ],
         ]);

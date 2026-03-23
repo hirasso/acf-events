@@ -217,9 +217,7 @@ final class Recurrences
          */
         return collect($rawFurtherDates)
             ->pluck($this->subFieldKey)
-            ->filter()
-            ->map(fn($date) => $this->core->getIsoDateTimeString($date))
-            ->filter(fn($date) => !$this->core->isDateInThePast($date))
+            ->filter(fn(string $date) => $this->core->isInThePast($date))
             ->map(fn(string $dateTime) => $this->createRecurrence($postID, $dateTime))
             ->values()
             ->all();
@@ -234,7 +232,7 @@ final class Recurrences
             throw new RuntimeException(sprintf(__('Not an event: %d'), $postID));
         }
 
-        if (!$this->core->isValidDateFormat($dateTime)) {
+        if (!$this->core->parseDateInFormat($dateTime)) {
             throw new Exception("Invalid date format: $dateTime");
         }
 
