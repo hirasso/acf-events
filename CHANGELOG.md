@@ -1,5 +1,12 @@
 # Changelog: `hirasso/festival-perspectives-events`
 
+## 1.0.2
+
+### Patch Changes
+
+- ea8a7fd: New wp-cli command: `wp events recurrences:create <post-id>...`
+- da5c258: Add new API method `fp_events()->core->isEventInThePast()`
+
 ## 1.0.1
 
 ### Patch Changes
